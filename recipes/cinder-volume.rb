@@ -20,7 +20,7 @@
 include_recipe "cinder::cinder-api"
 #include_recipe "monitoring"
 
-platform_options = node["nova"]["platform"]
+platform_options = node["cinder"]["platform"]
 
 platform_options["cinder_volume_packages"].each do |pkg|
   package pkg do
@@ -52,20 +52,20 @@ ks_service_endpoint = get_access_endpoint("keystone", "keystone", "service-api")
 keystone = get_settings_by_role("keystone","keystone")
 volume_endpoint = get_access_endpoint("cinder-volume", "cinder", "volume")
 
-# Register Volume Service
+# Register Cinder Volume Service
 keystone_register "Register Cinder Volume Service" do
   auth_host ks_admin_endpoint["host"]
   auth_port ks_admin_endpoint["port"]
   auth_protocol ks_admin_endpoint["scheme"]
   api_ver ks_admin_endpoint["path"]
   auth_token keystone["admin_token"]
-  service_name "Cinder Volume Service"
+  service_name "cinder"
   service_type "volume"
   service_description "Cinder Volume Service"
   action :create_service
 end
 
-# Register Image Endpoint
+# Register Cinder Endpoint
 keystone_register "Register Volume Endpoint" do
   auth_host ks_admin_endpoint["host"]
   auth_port ks_admin_endpoint["port"]
@@ -78,4 +78,31 @@ keystone_register "Register Volume Endpoint" do
   endpoint_internalurl volume_endpoint["uri"]
   endpoint_publicurl volume_endpoint["uri"]
   action :create_endpoint
+end
+
+# Register Service User
+keystone_register "Register Service User" do
+  auth_host ks_admin_endpoint["host"]
+  auth_port ks_admin_endpoint["port"]
+  auth_protocol ks_admin_endpoint["scheme"]
+  api_ver ks_admin_endpoint["path"]
+  auth_token keystone["admin_token"]
+  tenant_name node["cinder"]["service_tenant_name"]
+  user_name node["cinder"]["service_user"]
+  user_pass node["cinder"]["service_pass"]
+  user_enabled "true" # Not required as this is the default
+  action :create_user
+end
+
+## Grant Admin role to Service User for Service Tenant ##
+keystone_register "Grant 'admin' Role to Service User for Service Tenant" do
+  auth_host ks_admin_endpoint["host"]
+  auth_port ks_admin_endpoint["port"]
+  auth_protocol ks_admin_endpoint["scheme"]
+  api_ver ks_admin_endpoint["path"]
+  auth_token keystone["admin_token"]
+  tenant_name node["cinder"]["service_tenant_name"]
+  user_name node["cinder"]["service_user"]
+  role_name node["cinder"]["service_role"]
+  action :grant_role
 end

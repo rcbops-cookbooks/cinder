@@ -26,6 +26,9 @@ else
   node.set_unless["cinder"]["db"]["password"] = secure_password
 end
 
+# Set a secure keystone service password
+node.set_unless['cinder']['service_pass'] = secure_password
+
 include_recipe "mysql::client"
 include_recipe "mysql::ruby"
 #include_recipe "monitoring"
@@ -41,7 +44,7 @@ keystone_admin_tenant = keystone["users"][keystone_admin_user]["default_tenant"]
 
 #creates cinder db and user
 #function defined in osops-utils/libraries
-create_db_and_user("mysql",
+mysql_info = create_db_and_user("mysql",
                    node["cinder"]["db"]["name"],
                    node["cinder"]["db"]["username"],
                    node["cinder"]["db"]["password"])
@@ -74,6 +77,12 @@ template "/etc/cinder/cinder.conf" do
   owner "root"
   group "root"
   mode "0644"
+  variables(
+    "db_ip_address" => mysql_info["bind_address"],
+    "db_user" => node["cinder"]["db"]["username"],
+    "db_password" => node["cinder"]["db"]["password"],
+    "db_name" => node["cinder"]["db"]["name"]
+  )
   notifies :restart, resources(:service => "cinder-api"), :delayed
 end
 

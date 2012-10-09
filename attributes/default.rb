@@ -41,7 +41,7 @@ when "ubuntu"
     "cinder_api_packages" => ["cinder-common", "cinder-api", "python-cinderclient"],
     "cinder_api_service" => "cinder-api",
     "cinder_volume_packages" => ["cinder-volume"],
-    "cinder_volume_service" => "openstack-cinder-volume",
+    "cinder_volume_service" => "cinder-volume",
     "cinder_scheduler_packages" => ["cinder-scheduler"],
     "cinder_scheduler_service" => "cinder-scheduler",
     "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"

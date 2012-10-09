@@ -7,3 +7,4 @@ volume_group = cinder-volumes
 verbose = True
 auth_strategy = keystone
 state_path = /var/lib/cinder
+sql_connection = mysql://<%= @db_user %>:<%= @db_password %>@<%= @db_ip_address %>/<%= @db_name %>
