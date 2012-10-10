@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: nova
+# Cookbook Name:: cinder
 # Recipe:: scheduler
 #
 # Copyright 2012, Rackspace US, Inc.
@@ -17,45 +17,35 @@
 # limitations under the License.
 #
 
-include_recipe "nova::nova-common"
-include_recipe "monitoring"
+#include_recipe "monitoring"
 
-platform_options = node["nova"]["platform"]
+platform_options = node["cinder"]["platform"]
 
-directory "/var/lock/nova" do
-    owner "nova"
-    group "nova"
-    mode "0755"
-    action :create
-end
 
-platform_options["nova_scheduler_packages"].each do |pkg|
+platform_options["cinder_scheduler_packages"].each do |pkg|
   package pkg do
     action :upgrade
     options platform_options["package_overrides"]
   end
 end
 
-service "nova-scheduler" do
+service "cinder-scheduler" do
   service_name platform_options["nova_scheduler_service"]
   supports :status => true, :restart => true
   action [ :enable, :start ]
-  subscribes :restart, resources(:template => "/etc/nova/nova.conf"), :delayed
+  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
 
-monitoring_procmon "nova-scheduler" do
-  service_name=platform_options["nova_scheduler_service"]
-  process_name "nova-scheduler"
-  script_name service_name
-end
+#monitoring_procmon "cinder-scheduler" do
+#  service_name=platform_options["cinder_scheduler_service"]
+#  process_name "cinder-scheduler"
+#  script_name service_name
+#end
 
-monitoring_metric "nova-scheduler-proc" do
-  type "proc"
-  proc_name "nova-scheduler"
-  proc_regex platform_options["nova_scheduler_service"]
-
-  alarms(:failure_min => 2.0)
-end
-
-
-include_recipe "nova::nova-scheduler-patch"
+#monitoring_metric "cinder-scheduler-proc" do
+#  type "proc"
+#  proc_name "cinder-scheduler"
+#  proc_regex platform_options["cinder_scheduler_service"]
+#
+#  alarms(:failure_min => 2.0)
+#end

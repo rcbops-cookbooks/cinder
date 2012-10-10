@@ -44,6 +44,8 @@ when "ubuntu"
     "cinder_volume_service" => "cinder-volume",
     "cinder_scheduler_packages" => ["cinder-scheduler"],
     "cinder_scheduler_service" => "cinder-scheduler",
+    "cinder_iscsitarget_packages" => ["iscsitarget", "open-iscsi", "iscsitarget-dkms", "tgt"],
+    "cinder_iscsitarget_service" => "iscsitarget",
     "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
   }
 end

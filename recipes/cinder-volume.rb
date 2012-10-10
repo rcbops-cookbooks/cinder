@@ -18,6 +18,7 @@
 #
 
 include_recipe "cinder::cinder-api"
+include_recipe "cinder::cinder-scheduler"
 #include_recipe "monitoring"
 
 platform_options = node["cinder"]["platform"]
@@ -29,23 +30,35 @@ platform_options["cinder_volume_packages"].each do |pkg|
   end
 end
 
+platform_options["cinder_iscsitarget_packages"].each do |pkg|
+  package pkg do
+    action :upgrade
+    options platform_options["package_overrides"]
+  end
+end
+
+# set to enabled right now but can be toggled
 service "cinder-volume" do
   service_name platform_options["cinder_volume_service"]
   supports :status => true, :restart => true
-  action :disable
-#  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
+  action :enable
+  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
 
-# TODO(rp): need the flag on whether or not to start nova-volume service
-# this is already on backlog
-# monitoring_procmon "nova-volume" do
-#   service_name=platform_options["nova_volume_service"]
+service "iscsitarget" do
+  service_name platform_options["cinder_iscsitarget__service"]
+  supports :status => true, :restart => true
+  action :enable
+#  subscribes :restart, resources(:template => "/etc/default/iscsitarget"), :delayed
+end
 
-#   process_name "nova-volume"
-#   start_cmd "/usr/sbin/service #{service_name} start"
-#   stop_cmd "/usr/sbin/service #{service_name} stop"
-# end
-
+template "/etc/default/iscsitarget" do
+  source "iscsitarget.erb"
+  owner "root"
+  group "root"
+  mode "0644"
+  notifies :restart, resources(:service => "iscsitarget"), :immediately
+end
 
 ks_admin_endpoint = get_access_endpoint("keystone", "keystone", "admin-api")
 ks_service_endpoint = get_access_endpoint("keystone", "keystone", "service-api")

@@ -49,6 +49,8 @@ mysql_info = create_db_and_user("mysql",
                    node["cinder"]["db"]["username"],
                    node["cinder"]["db"]["password"])
 
+rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
+
 # install packages for cinder-api
 platform_options["cinder_api_packages"].each do |pkg|
   package pkg do
@@ -81,7 +83,9 @@ template "/etc/cinder/cinder.conf" do
     "db_ip_address" => mysql_info["bind_address"],
     "db_user" => node["cinder"]["db"]["username"],
     "db_password" => node["cinder"]["db"]["password"],
-    "db_name" => node["cinder"]["db"]["name"]
+    "db_name" => node["cinder"]["db"]["name"],
+    "rabbit_ipaddress" => rabbit_info["host"],
+    "rabbit_port" => rabbit_info["port"]
   )
   notifies :restart, resources(:service => "cinder-api"), :delayed
 end
