@@ -54,7 +54,7 @@ end
 
 template "/etc/tgt/targets.conf" do
   source "targets.conf.erb"
-  mode 600
+  mode "600"
   notifies :restart, resources(:service => "iscsitarget"), :immediately
 end
 
