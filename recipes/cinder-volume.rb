@@ -117,3 +117,17 @@ keystone_register "Grant 'admin' Role to Service User for Service Tenant" do
   role_name node["cinder"]["service_role"]
   action :grant_role
 end
+
+#monitoring_procmon "cinder-volume" do
+#  service_name=platform_options["cinder_volume_service"]
+#  process_name "cinder-volume"
+#  script_name service_name
+#end
+
+#monitoring_metric "cinder-volume-proc" do
+#  type "proc"
+#  proc_name "cinder-volume"
+#  proc_regex platform_options["cinder_volume_service"]
+#
+#  alarms(:failure_min => 2.0)
+#end

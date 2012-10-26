@@ -118,27 +118,16 @@ file "/var/lib/cinder/cinder.sqlite" do
       action :delete
 end
 
-#monitoring_metric "nova-plugin" do
-#  type "pyscript"
-#  script "nova_plugin.py"
-#  options("Username" => keystone_admin_user,
-#          "Password" => keystone_admin_password,
-#          "TenantName" => keystone_admin_tenant,
-#          "AuthURL" => ks_service_endpoint["uri"])
-#end
-
-
-
-#monitoring_procmon "nova-api-os-volume" do
-#  service_name=platform_options["api_os_volume_service"]
-#  process_name "nova-api-os-volume"
+#monitoring_procmon "cinder-api" do
+#  service_name=platform_options["cinder_api_service"]
+#  process_name "cinder-api"
 #  script_name service_name
 #end
 
-#monitoring_metric "nova-api-os-volume-proc" do
+#monitoring_metric "cinder-api-proc" do
 #  type "proc"
-#  proc_name "nova-api-os-volume"
-#  proc_regex platform_options["api_os_volume_service"]
+#  proc_name "cinder-api"
+#  proc_regex platform_options["cinder_api_service"]
 #
 #  alarms(:failure_min => 2.0)
 #end
