@@ -36,16 +36,15 @@ service "cinder-scheduler" do
   subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
 
-#monitoring_procmon "cinder-scheduler" do
-#  service_name=platform_options["cinder_scheduler_service"]
-#  process_name "cinder-scheduler"
-#  script_name service_name
-#end
+monitoring_procmon "cinder-scheduler" do
+  service_name=platform_options["cinder_scheduler_service"]
+  process_name "cinder-scheduler"
+  script_name service_name
+end
 
-#monitoring_metric "cinder-scheduler-proc" do
-#  type "proc"
-#  proc_name "cinder-scheduler"
-#  proc_regex platform_options["cinder_scheduler_service"]
-#
-#  alarms(:failure_min => 2.0)
-#end
+monitoring_metric "cinder-scheduler-proc" do
+  type "proc"
+  proc_name "cinder-scheduler"
+  proc_regex platform_options["cinder_scheduler_service"]
+  alarms(:failure_min => 2.0)
+end
