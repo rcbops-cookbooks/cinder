@@ -21,12 +21,6 @@ default["cinder"]["syslog"]["use"] = true                                     # 
 default["cinder"]["syslog"]["facility"] = "LOG_LOCAL1"                        # node_attribute
 default["cinder"]["syslog"]["config_facility"] = "local1"                     # node_attribute
 
-# can this be wedged into the "api" endpoint?                               # node_attribute
-default["cinder"]["compute"]["region"] = "RegionOne"                          # node_attribute
-
-default["cinder"]["config"]["availability_zone"] = "cinder"                             # node_attribute
-default["cinder"]["config"]["default_schedule_zone"] = "cinder"                         # cluster_attribute
-
 case platform
 when "fedora", "redhat", "centos"
   default["cinder"]["platform"] = {                                                   # node_attribute
@@ -48,8 +42,8 @@ when "ubuntu"
     "cinder_volume_service" => "cinder-volume",
     "cinder_scheduler_packages" => ["cinder-scheduler"],
     "cinder_scheduler_service" => "cinder-scheduler",
-    "cinder_iscsitarget_packages" => ["iscsitarget", "open-iscsi", "iscsitarget-dkms", "tgt"],
-    "cinder_iscsitarget_service" => "iscsitarget",
+    "cinder_iscsitarget_packages" => ["tgt"],
+    "cinder_iscsitarget_service" => "tgt",
     "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
   }
 end

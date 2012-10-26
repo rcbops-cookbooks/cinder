@@ -52,11 +52,9 @@ service "iscsitarget" do
 #  subscribes :restart, resources(:template => "/etc/default/iscsitarget"), :delayed
 end
 
-template "/etc/default/iscsitarget" do
-  source "iscsitarget.erb"
-  owner "root"
-  group "root"
-  mode "0644"
+template "/etc/tgt/targets.conf" do
+  source "targets.conf.erb"
+  mode 600
   notifies :restart, resources(:service => "iscsitarget"), :immediately
 end
 
