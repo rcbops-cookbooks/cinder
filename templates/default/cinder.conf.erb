@@ -1,7 +1,7 @@
 [DEFAULT]
 rootwrap_config = /etc/cinder/rootwrap.conf
 api_paste_confg = /etc/cinder/api-paste.ini
-iscsi_helper = ietadm
+iscsi_helper = tgtadm
 volume_name_template = volume-%s
 volume_group = cinder-volumes
 verbose = True
@@ -10,3 +10,12 @@ state_path = /var/lib/cinder
 sql_connection = mysql://<%= @db_user %>:<%= @db_password %>@<%= @db_ip_address %>/<%= @db_name %>
 rabbit_host = <%= @rabbit_ipaddress %>
 rabbit_port = <%= @rabbit_port %>
+
+[keystone_authtoken]
+admin_tenant_name = <%= @service_tenant_name %>
+admin_user = <%= @service_user %>
+admin_password = <%= @service_pass %>
+auth_host = <%= @auth_host %>
+auth_port = <%= @auth_port %>
+auth_protocol = <%= @auth_protocol %>
+signing_dirname = /tmp/keystone-signing-cinder

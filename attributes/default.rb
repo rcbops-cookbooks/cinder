@@ -30,10 +30,14 @@ default["cinder"]["config"]["default_schedule_zone"] = "cinder"                 
 case platform
 when "fedora", "redhat", "centos"
   default["cinder"]["platform"] = {                                                   # node_attribute
-    "api_os_volume_packages" => ["openstack-cinder-api"],
-    "api_os_volume_service" => "openstack-cinder-api",
-    "cinder_volume_packages" => ["openstack-cinder-volume"],
+    "cinder_api_packages" => ["openstack-cinder", "python-cinderclient"],
+    "cinder_api_service" => "openstack-cinder-api",
+    "cinder_volume_packages" => ["openstack-cinder"],
     "cinder_volume_service" => "openstack-cinder-volume",
+    "cinder_scheduler_packages" => ["openstack-cinder"],
+    "cinder_scheduler_service" => "openstack-cinder-scheduler",
+    "cinder_iscsitarget_packages" => ["scsi-target-utils"],
+    "cinder_iscsitarget_service" => "tgtd",
     "package_overrides" => ""
   }
 when "ubuntu"

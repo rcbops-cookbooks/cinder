@@ -41,12 +41,12 @@ end
 service "cinder-volume" do
   service_name platform_options["cinder_volume_service"]
   supports :status => true, :restart => true
-  action :enable
+  action [ :enable, :start ]
   subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
 
 service "iscsitarget" do
-  service_name platform_options["cinder_iscsitarget__service"]
+  service_name platform_options["cinder_iscsitarget_service"]
   supports :status => true, :restart => true
   action :enable
 #  subscribes :restart, resources(:template => "/etc/default/iscsitarget"), :delayed

@@ -63,7 +63,6 @@ end
 execute "cinder-manage db sync" do
   command "cinder-manage db sync"
   action :nothing
-#  not_if "nova-manage db version && test $(nova-manage db version) -gt 0"
 end
 
 # define the cinder-api service so we can call it later
@@ -85,7 +84,13 @@ template "/etc/cinder/cinder.conf" do
     "db_password" => node["cinder"]["db"]["password"],
     "db_name" => node["cinder"]["db"]["name"],
     "rabbit_ipaddress" => rabbit_info["host"],
-    "rabbit_port" => rabbit_info["port"]
+    "rabbit_port" => rabbit_info["port"],
+    "service_tenant_name" => node["cinder"]["service_tenant_name"],
+    "service_user" => node["cinder"]["service_user"],
+    "service_pass" => node["cinder"]["service_pass"],
+    "auth_host" => ks_admin_endpoint["host"],
+    "auth_port" => ks_admin_endpoint["port"],
+    "auth_protocol" => ks_admin_endpoint["scheme"]
   )
   notifies :restart, resources(:service => "cinder-api"), :delayed
 end
