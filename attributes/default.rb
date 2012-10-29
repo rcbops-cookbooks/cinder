@@ -24,11 +24,11 @@ default["cinder"]["syslog"]["config_facility"] = "local1"                     # 
 case platform
 when "fedora", "redhat", "centos"
   default["cinder"]["platform"] = {                                                   # node_attribute
-    "cinder_api_packages" => ["openstack-cinder", "python-cinderclient"],
+    "cinder_api_packages" => ["openstack-cinder", "python-cinderclient", "mysql-python"],
     "cinder_api_service" => "openstack-cinder-api",
-    "cinder_volume_packages" => ["openstack-cinder"],
+    "cinder_volume_packages" => ["openstack-cinder", "mysql-python"],
     "cinder_volume_service" => "openstack-cinder-volume",
-    "cinder_scheduler_packages" => ["openstack-cinder"],
+    "cinder_scheduler_packages" => ["openstack-cinder", "mysql-python"],
     "cinder_scheduler_service" => "openstack-cinder-scheduler",
     "cinder_iscsitarget_packages" => ["scsi-target-utils"],
     "cinder_iscsitarget_service" => "tgtd",
@@ -36,11 +36,11 @@ when "fedora", "redhat", "centos"
   }
 when "ubuntu"
   default["cinder"]["platform"] = {                                                   # node_attribute
-    "cinder_api_packages" => ["cinder-common", "cinder-api", "python-cinderclient"],
+    "cinder_api_packages" => ["cinder-common", "cinder-api", "python-cinderclient", "python-mysqldb"],
     "cinder_api_service" => "cinder-api",
-    "cinder_volume_packages" => ["cinder-volume"],
+    "cinder_volume_packages" => ["cinder-volume", "python-mysqldb"],
     "cinder_volume_service" => "cinder-volume",
-    "cinder_scheduler_packages" => ["cinder-scheduler"],
+    "cinder_scheduler_packages" => ["cinder-scheduler", "python-mysqldb"],
     "cinder_scheduler_service" => "cinder-scheduler",
     "cinder_iscsitarget_packages" => ["tgt"],
     "cinder_iscsitarget_service" => "tgt",
