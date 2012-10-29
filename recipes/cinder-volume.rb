@@ -61,7 +61,12 @@ end
 ks_admin_endpoint = get_access_endpoint("keystone", "keystone", "admin-api")
 ks_service_endpoint = get_access_endpoint("keystone", "keystone", "service-api")
 keystone = get_settings_by_role("keystone","keystone")
+
+# NOTE(shep): this allows for a better upgrade path from essex-final to folsom
 volume_endpoint = get_access_endpoint("cinder-volume", "cinder", "volume")
+if volume_endpoint.nil?
+  volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
+end
 
 # Register Cinder Volume Service
 keystone_register "Register Cinder Volume Service" do
