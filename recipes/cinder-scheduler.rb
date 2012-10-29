@@ -17,10 +17,7 @@
 # limitations under the License.
 #
 
-#include_recipe "monitoring"
-
 platform_options = node["cinder"]["platform"]
-
 
 platform_options["cinder_scheduler_packages"].each do |pkg|
   package pkg do
@@ -37,7 +34,6 @@ service "cinder-scheduler" do
   service_name platform_options["cinder_scheduler_service"]
   supports :status => true, :restart => true
   action [ :enable, :start ]
-  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
 
 template "/etc/cinder/cinder.conf" do

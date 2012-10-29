@@ -17,10 +17,6 @@
 # limitations under the License.
 #
 
-#include_recipe "cinder::cinder-api"
-#include_recipe "cinder::cinder-scheduler"
-#include_recipe "monitoring"
-
 platform_options = node["cinder"]["platform"]
 
 platform_options["cinder_volume_packages"].each do |pkg|
@@ -68,7 +64,6 @@ service "iscsitarget" do
   service_name platform_options["cinder_iscsitarget_service"]
   supports :status => true, :restart => true
   action :enable
-#  subscribes :restart, resources(:template => "/etc/default/iscsitarget"), :delayed
 end
 
 template "/etc/tgt/targets.conf" do

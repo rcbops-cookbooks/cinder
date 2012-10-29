@@ -31,7 +31,6 @@ node.set_unless['cinder']['service_pass'] = secure_password
 
 include_recipe "mysql::client"
 include_recipe "mysql::ruby"
-#include_recipe "monitoring"
 
 platform_options = node["cinder"]["platform"]
 
@@ -75,7 +74,6 @@ service "cinder-api" do
   service_name platform_options["cinder_api_service"]
   supports :status => true, :restart => true
   action :enable
-#  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
 
 template "/etc/cinder/cinder.conf" do
@@ -182,6 +180,5 @@ monitoring_metric "cinder-api-proc" do
   type "proc"
   proc_name "cinder-api"
   proc_regex platform_options["cinder_api_service"]
-
   alarms(:failure_min => 2.0)
 end
