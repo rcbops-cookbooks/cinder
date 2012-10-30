@@ -43,6 +43,7 @@ keystone_admin_tenant = keystone["users"][keystone_admin_user]["default_tenant"]
 
 volume_endpoint = get_access_endpoint("cinder-volume", "cinder", "volume")
 if volume_endpoint.nil?
+    Chef::Log.info("Rolling back to search for nova-volume")
     volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
 end
 
