@@ -12,10 +12,4 @@ rabbit_host = <%= @rabbit_ipaddress %>
 rabbit_port = <%= @rabbit_port %>
 
 [keystone_authtoken]
-admin_tenant_name = <%= @service_tenant_name %>
-admin_user = <%= @service_user %>
-admin_password = <%= @service_pass %>
-auth_host = <%= @auth_host %>
-auth_port = <%= @auth_port %>
-auth_protocol = <%= @auth_protocol %>
 signing_dirname = /tmp/keystone-signing-cinder

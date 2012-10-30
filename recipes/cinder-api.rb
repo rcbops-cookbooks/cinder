@@ -31,7 +31,6 @@ node.set_unless['cinder']['service_pass'] = secure_password
 
 include_recipe "mysql::client"
 include_recipe "mysql::ruby"
-#include_recipe "monitoring"
 
 platform_options = node["cinder"]["platform"]
 
@@ -41,6 +40,11 @@ keystone = get_settings_by_role("keystone", "keystone")
 keystone_admin_user = keystone["admin_user"]
 keystone_admin_password = keystone["users"][keystone_admin_user]["password"]
 keystone_admin_tenant = keystone["users"][keystone_admin_user]["default_tenant"]
+
+volume_endpoint = get_access_endpoint("cinder-volume", "cinder", "volume")
+if volume_endpoint.nil?
+    volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
+end
 
 #creates cinder db and user
 #function defined in osops-utils/libraries
@@ -70,7 +74,6 @@ service "cinder-api" do
   service_name platform_options["cinder_api_service"]
   supports :status => true, :restart => true
   action :enable
-#  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
 
 template "/etc/cinder/cinder.conf" do
@@ -84,14 +87,9 @@ template "/etc/cinder/cinder.conf" do
     "db_password" => node["cinder"]["db"]["password"],
     "db_name" => node["cinder"]["db"]["name"],
     "rabbit_ipaddress" => rabbit_info["host"],
-    "rabbit_port" => rabbit_info["port"],
-    "service_tenant_name" => node["cinder"]["service_tenant_name"],
-    "service_user" => node["cinder"]["service_user"],
-    "service_pass" => node["cinder"]["service_pass"],
-    "auth_host" => ks_admin_endpoint["host"],
-    "auth_port" => ks_admin_endpoint["port"],
-    "auth_protocol" => ks_admin_endpoint["scheme"]
+    "rabbit_port" => rabbit_info["port"]
   )
+  notifies :run, resources(:execute => "cinder-manage db sync"), :immediately
   notifies :restart, resources(:service => "cinder-api"), :delayed
 end
 
@@ -109,8 +107,7 @@ template "/etc/cinder/api-paste.ini" do
     "admin_port" => ks_admin_endpoint["port"],
     "admin_token" => keystone["admin_token"]
   )
-  notifies :run, resources(:execute => "cinder-manage db sync"), :immediately
-  notifies :restart, resources(:service => "cinder-api"), :immediately
+  notifies :restart, resources(:service => "cinder-api"), :delayed
 end
 
 # now we are using mysql, ditch the original sqlite file
@@ -118,18 +115,70 @@ file "/var/lib/cinder/cinder.sqlite" do
       action :delete
 end
 
-#monitoring_procmon "cinder-api" do
-#  service_name=platform_options["cinder_api_service"]
-#  process_name "cinder-api"
-#  script_name service_name
-#end
+# Register Cinder Volume Service
+keystone_register "Register Cinder Volume Service" do
+  auth_host ks_admin_endpoint["host"]
+  auth_port ks_admin_endpoint["port"]
+  auth_protocol ks_admin_endpoint["scheme"]
+  api_ver ks_admin_endpoint["path"]
+  auth_token keystone["admin_token"]
+  service_name "cinder"
+  service_type "volume"
+  service_description "Cinder Volume Service"
+  action :create_service
+end
 
-#monitoring_metric "cinder-api-proc" do
-#  type "proc"
-#  proc_name "cinder-api"
-#  proc_regex platform_options["cinder_api_service"]
-#
-#  alarms(:failure_min => 2.0)
-#end
+# Register Cinder Endpoint
+keystone_register "Register Volume Endpoint" do
+  auth_host ks_admin_endpoint["host"]
+  auth_port ks_admin_endpoint["port"]
+  auth_protocol ks_admin_endpoint["scheme"]
+  api_ver ks_admin_endpoint["path"]
+  auth_token keystone["admin_token"]
+  service_type "volume"
+  endpoint_region "RegionOne"
+  endpoint_adminurl volume_endpoint["uri"]
+  endpoint_internalurl volume_endpoint["uri"]
+  endpoint_publicurl volume_endpoint["uri"]
+  action :create_endpoint
+end
 
+# Register Service User
+keystone_register "Register Service User" do
+  auth_host ks_admin_endpoint["host"]
+  auth_port ks_admin_endpoint["port"]
+  auth_protocol ks_admin_endpoint["scheme"]
+  api_ver ks_admin_endpoint["path"]
+  auth_token keystone["admin_token"]
+  tenant_name node["cinder"]["service_tenant_name"]
+  user_name node["cinder"]["service_user"]
+  user_pass node["cinder"]["service_pass"]
+  user_enabled "true" # Not required as this is the default
+  action :create_user
+end
 
+## Grant Admin role to Service User for Service Tenant ##
+keystone_register "Grant 'admin' Role to Service User for Service Tenant" do
+  auth_host ks_admin_endpoint["host"]
+  auth_port ks_admin_endpoint["port"]
+  auth_protocol ks_admin_endpoint["scheme"]
+  api_ver ks_admin_endpoint["path"]
+  auth_token keystone["admin_token"]
+  tenant_name node["cinder"]["service_tenant_name"]
+  user_name node["cinder"]["service_user"]
+  role_name node["cinder"]["service_role"]
+  action :grant_role
+end
+
+monitoring_procmon "cinder-api" do
+  service_name=platform_options["cinder_api_service"]
+  process_name "cinder-api"
+  script_name service_name
+end
+
+monitoring_metric "cinder-api-proc" do
+  type "proc"
+  proc_name "cinder-api"
+  proc_regex platform_options["cinder_api_service"]
+  alarms(:failure_min => 2.0)
+end
