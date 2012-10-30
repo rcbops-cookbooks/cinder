@@ -17,10 +17,6 @@
 # limitations under the License.
 #
 
-include_recipe "cinder::cinder-api"
-include_recipe "cinder::cinder-scheduler"
-#include_recipe "monitoring"
-
 platform_options = node["cinder"]["platform"]
 
 platform_options["cinder_volume_packages"].each do |pkg|
@@ -37,19 +33,37 @@ platform_options["cinder_iscsitarget_packages"].each do |pkg|
   end
 end
 
+rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
+mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
+cinder_info = get_settings_by_role("cinder-api", "cinder")
+
 # set to enabled right now but can be toggled
 service "cinder-volume" do
   service_name platform_options["cinder_volume_service"]
   supports :status => true, :restart => true
   action [ :enable, :start ]
-  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
+end
+
+template "/etc/cinder/cinder.conf" do
+  source "cinder.conf.erb"
+  owner "root"
+  group "root"
+  mode "0644"
+  variables(
+    "db_ip_address" => mysql_info["host"],
+    "db_user" => node["cinder"]["db"]["username"],
+    "db_password" => cinder_info["db"]["password"],
+    "db_name" => node["cinder"]["db"]["name"],
+    "rabbit_ipaddress" => rabbit_info["host"],
+    "rabbit_port" => rabbit_info["port"]
+  )
+  notifies :restart, resources(:service => "cinder-volume"), :delayed
 end
 
 service "iscsitarget" do
   service_name platform_options["cinder_iscsitarget_service"]
   supports :status => true, :restart => true
   action :enable
-#  subscribes :restart, resources(:template => "/etc/default/iscsitarget"), :delayed
 end
 
 template "/etc/tgt/targets.conf" do
@@ -58,81 +72,15 @@ template "/etc/tgt/targets.conf" do
   notifies :restart, resources(:service => "iscsitarget"), :immediately
 end
 
-ks_admin_endpoint = get_access_endpoint("keystone", "keystone", "admin-api")
-ks_service_endpoint = get_access_endpoint("keystone", "keystone", "service-api")
-keystone = get_settings_by_role("keystone","keystone")
-
-# NOTE(shep): this allows for a better upgrade path from essex-final to folsom
-volume_endpoint = get_access_endpoint("cinder-volume", "cinder", "volume")
-if volume_endpoint.nil?
-  volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
+monitoring_procmon "cinder-volume" do
+  service_name=platform_options["cinder_volume_service"]
+  process_name "cinder-volume"
+  script_name service_name
 end
 
-# Register Cinder Volume Service
-keystone_register "Register Cinder Volume Service" do
-  auth_host ks_admin_endpoint["host"]
-  auth_port ks_admin_endpoint["port"]
-  auth_protocol ks_admin_endpoint["scheme"]
-  api_ver ks_admin_endpoint["path"]
-  auth_token keystone["admin_token"]
-  service_name "cinder"
-  service_type "volume"
-  service_description "Cinder Volume Service"
-  action :create_service
+monitoring_metric "cinder-volume-proc" do
+  type "proc"
+  proc_name "cinder-volume"
+  proc_regex platform_options["cinder_volume_service"]
+  alarms(:failure_min => 2.0)
 end
-
-# Register Cinder Endpoint
-keystone_register "Register Volume Endpoint" do
-  auth_host ks_admin_endpoint["host"]
-  auth_port ks_admin_endpoint["port"]
-  auth_protocol ks_admin_endpoint["scheme"]
-  api_ver ks_admin_endpoint["path"]
-  auth_token keystone["admin_token"]
-  service_type "volume"
-  endpoint_region "RegionOne"
-  endpoint_adminurl volume_endpoint["uri"]
-  endpoint_internalurl volume_endpoint["uri"]
-  endpoint_publicurl volume_endpoint["uri"]
-  action :create_endpoint
-end
-
-# Register Service User
-keystone_register "Register Service User" do
-  auth_host ks_admin_endpoint["host"]
-  auth_port ks_admin_endpoint["port"]
-  auth_protocol ks_admin_endpoint["scheme"]
-  api_ver ks_admin_endpoint["path"]
-  auth_token keystone["admin_token"]
-  tenant_name node["cinder"]["service_tenant_name"]
-  user_name node["cinder"]["service_user"]
-  user_pass node["cinder"]["service_pass"]
-  user_enabled "true" # Not required as this is the default
-  action :create_user
-end
-
-## Grant Admin role to Service User for Service Tenant ##
-keystone_register "Grant 'admin' Role to Service User for Service Tenant" do
-  auth_host ks_admin_endpoint["host"]
-  auth_port ks_admin_endpoint["port"]
-  auth_protocol ks_admin_endpoint["scheme"]
-  api_ver ks_admin_endpoint["path"]
-  auth_token keystone["admin_token"]
-  tenant_name node["cinder"]["service_tenant_name"]
-  user_name node["cinder"]["service_user"]
-  role_name node["cinder"]["service_role"]
-  action :grant_role
-end
-
-#monitoring_procmon "cinder-volume" do
-#  service_name=platform_options["cinder_volume_service"]
-#  process_name "cinder-volume"
-#  script_name service_name
-#end
-
-#monitoring_metric "cinder-volume-proc" do
-#  type "proc"
-#  proc_name "cinder-volume"
-#  proc_regex platform_options["cinder_volume_service"]
-#
-#  alarms(:failure_min => 2.0)
-#end
