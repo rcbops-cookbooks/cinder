@@ -29,6 +29,10 @@ end
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
 cinder_info = get_settings_by_role("cinder-api", "cinder")
+if cinder_info.nil?
+  Chef::Log.info("Rolling back to search for nova-volume")
+  cinder_info = get_settings_by_role("nova-volume", "cinder")
+end
 
 service "cinder-scheduler" do
   service_name platform_options["cinder_scheduler_service"]
