@@ -47,7 +47,7 @@ template "/etc/cinder/cinder.conf" do
     "db_password" => cinder_info["db"]["password"],
     "db_name" => node["cinder"]["db"]["name"],
     "rabbit_ipaddress" => rabbit_info["host"],
-    "rabbit_port" => rabbit_info["port"],
+    "rabbit_port" => rabbit_info["port"]
   )
   notifies :restart, resources(:service => "cinder-scheduler"), :delayed
 end

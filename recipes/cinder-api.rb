@@ -87,7 +87,7 @@ template "/etc/cinder/cinder.conf" do
     "db_password" => node["cinder"]["db"]["password"],
     "db_name" => node["cinder"]["db"]["name"],
     "rabbit_ipaddress" => rabbit_info["host"],
-    "rabbit_port" => rabbit_info["port"],
+    "rabbit_port" => rabbit_info["port"]
   )
   notifies :run, resources(:execute => "cinder-manage db sync"), :immediately
   notifies :restart, resources(:service => "cinder-api"), :delayed
