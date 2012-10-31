@@ -24,11 +24,11 @@ default["cinder"]["syslog"]["config_facility"] = "local1"                     # 
 case platform
 when "fedora", "redhat", "centos"
   default["cinder"]["platform"] = {                                                   # node_attribute
-    "cinder_api_packages" => ["openstack-cinder", "python-cinderclient", "mysql-python"],
+    "cinder_api_packages" => ["openstack-cinder", "python-cinderclient", "MySQL-python"],
     "cinder_api_service" => "openstack-cinder-api",
-    "cinder_volume_packages" => ["openstack-cinder", "mysql-python"],
+    "cinder_volume_packages" => ["openstack-cinder", "MySQL-python"],
     "cinder_volume_service" => "openstack-cinder-volume",
-    "cinder_scheduler_packages" => ["openstack-cinder", "mysql-python"],
+    "cinder_scheduler_packages" => ["openstack-cinder", "MySQL-python"],
     "cinder_scheduler_service" => "openstack-cinder-scheduler",
     "cinder_iscsitarget_packages" => ["scsi-target-utils"],
     "cinder_iscsitarget_service" => "tgtd",
