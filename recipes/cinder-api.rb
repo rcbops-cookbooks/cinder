@@ -32,7 +32,12 @@ keystone_admin_tenant = keystone["users"][keystone_admin_user]["default_tenant"]
 
 mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
-cinder_setup_info = get_settings_by_recipe("cinder-setup", "cinder")
+
+cinder_setup_info = get_settings_by_role("cinder-setup", "cinder")
+if cinder_setup_info.nil?
+  Chef::Log.info("Rolling back to search for cinder-setup recipe instead of role")
+  cinder_setup_info = get_settings_by_recipe("cinder-setup", "cinder")
+end
 
 # install packages for cinder-api
 platform_options["cinder_api_packages"].each do |pkg|
