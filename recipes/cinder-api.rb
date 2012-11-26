@@ -36,7 +36,7 @@ rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 cinder_setup_info = get_settings_by_role("cinder-setup", "cinder")
 if cinder_setup_info.nil?
   Chef::Log.info("Rolling back to search for cinder-setup recipe instead of role")
-  cinder_setup_info = get_settings_by_recipe("cinder-setup", "cinder")
+  cinder_setup_info = get_settings_by_recipe("cinder\\:\\:cinder-setup", "cinder")
 end
 
 # install packages for cinder-api
