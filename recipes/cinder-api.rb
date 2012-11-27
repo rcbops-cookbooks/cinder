@@ -33,10 +33,12 @@ keystone_admin_tenant = keystone["users"][keystone_admin_user]["default_tenant"]
 mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 
-cinder_setup_info = get_settings_by_role("cinder-setup", "cinder")
-if cinder_setup_info.nil?
-  Chef::Log.info("Rolling back to search for cinder-setup recipe instead of role")
-  cinder_setup_info = get_settings_by_recipe("cinder\\:\\:cinder-setup", "cinder")
+if cinder_info = get_settings_by_role("cinder-setup", "cinder")
+    Chef::Log.info("got cinder_info from cinder-setup role holder")
+elsif cinder_info = get_settings_by_role("nova-volume", "cinder")
+    Chef::Log.info("got cinder_info from nova-volume role holder")
+elsif cinder_info = get_settings_by_recipe("cinder::cinder-setup", "cinder")
+    Chef::Log.info("got cinder_info from cinder-setup recipe holder")
 end
 
 # install packages for cinder-api
@@ -62,7 +64,7 @@ template "/etc/cinder/cinder.conf" do
   variables(
     "db_ip_address" => mysql_info["host"],
     "db_user" => node["cinder"]["db"]["username"],
-    "db_password" => cinder_setup_info["db"]["password"],
+    "db_password" => cinder_info["db"]["password"],
     "db_name" => node["cinder"]["db"]["name"],
     "rabbit_ipaddress" => rabbit_info["host"],
     "rabbit_port" => rabbit_info["port"]
@@ -78,7 +80,7 @@ template "/etc/cinder/api-paste.ini" do
   variables(
     "service_tenant_name" => node["cinder"]["service_tenant_name"],
     "service_user" => node["cinder"]["service_user"],
-    "service_pass" => cinder_setup_info["service_pass"],
+    "service_pass" => cinder_info["service_pass"],
     "keystone_api_ipaddress" => ks_service_endpoint["host"],
     "service_port" => ks_service_endpoint["port"],
     "admin_port" => ks_admin_endpoint["port"],
