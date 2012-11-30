@@ -30,11 +30,11 @@ rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
 
 if cinder_info = get_settings_by_role("cinder-setup", "cinder")
-    Chef::Log.info("got cinder_info from cinder-setup role holder")
+    Chef::Log.info("cinder::cinder-scheduler got cinder_info from cinder-setup role holder")
 elsif cinder_info = get_settings_by_role("nova-volume", "cinder")
-    Chef::Log.info("got cinder_info from nova-volume role holder")
+    Chef::Log.info("cinder::cinder-scheduler got cinder_info from nova-volume role holder")
 elsif cinder_info = get_settings_by_recipe("cinder::cinder-setup", "cinder")
-    Chef::Log.info("got cinder_info from cinder-setup recipe holder")
+    Chef::Log.info("cinder::cinder-scheduler got cinder_info from cinder-setup recipe holder")
 end
 
 service "cinder-scheduler" do
