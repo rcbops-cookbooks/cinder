@@ -11,10 +11,10 @@ default["cinder"]["service_tenant_name"] = "service"                          # 
 default["cinder"]["service_user"] = "cinder"                                    # node_attribute
 default["cinder"]["service_role"] = "admin"                                   # node_attribute
 
-default["cinder"]["services"]["volume"]["scheme"] = "http"                    # node_attribute
-default["cinder"]["services"]["volume"]["network"] = "public"                 # node_attribute
-default["cinder"]["services"]["volume"]["port"] = 8776                        # node_attribute
-default["cinder"]["services"]["volume"]["path"] = "/v1/%(tenant_id)s"         # node_attribute
+default["cinder"]["services"]["api"]["scheme"] = "http"                    # node_attribute
+default["cinder"]["services"]["api"]["network"] = "public"                 # node_attribute
+default["cinder"]["services"]["api"]["port"] = 8776                        # node_attribute
+default["cinder"]["services"]["api"]["path"] = "/v1/%(tenant_id)s"         # node_attribute
 
 # Logging stuff
 default["cinder"]["syslog"]["use"] = true                                     # node_attribute
