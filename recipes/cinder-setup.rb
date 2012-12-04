@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cinder
-# Recipe:: cinder-api
+# Recipe:: cinder-setup
 #
 # Copyright 2012, Rackspace US, Inc.
 #
@@ -41,11 +41,15 @@ keystone_admin_user = keystone["admin_user"]
 keystone_admin_password = keystone["users"][keystone_admin_user]["password"]
 keystone_admin_tenant = keystone["users"][keystone_admin_user]["default_tenant"]
 
-volume_endpoint = get_access_endpoint("cinder-api", "cinder", "api")
-if volume_endpoint.nil?
-    Chef::Log.info("Rolling back to search for nova-volume")
-    volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
+if volume_endpoint = get_access_endpoint("cinder-all", "cinder", "api")
+    Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-all role holder using get_access_endpoint")
+elsif volume_endpoint = get_bind_endpoint("cinder", "api")
+    Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-api role holder using get_bind_endpoint")
+elsif volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
+    Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from nova-volume role holder using get_access_endpoint")
 end
+
+Chef::Log.debug("volume_endpoint contains: #{volume_endpoint}")
 
 #creates cinder db and user
 #function defined in osops-utils/libraries
