@@ -4,6 +4,19 @@ default["enable_monit"] = false  # OS provides packages                     # cl
 default["developer_mode"] = false  # we want secure passwords by default    # cluster_attribute
 ########################################################################
 
+# lvm/netappiscsi/netappnfs
+default["cinder"]["storage"]["provider"] = "lvm"
+
+# netapp settings - set these if you are using netappiscsi/netappnfs
+# as the storage provider above
+default["cinder"]["storage"]["netapp"]["wsdl_url"] = ""
+default["cinder"]["storage"]["netapp"]["login"] = "root"
+default["cinder"]["storage"]["netapp"]["password"] = ""
+default["cinder"]["storage"]["netapp"]["server_hostname"] = ""
+default["cinder"]["storage"]["netapp"]["server_port"] = "8088"
+default["cinder"]["storage"]["netapp"]["storage_service"] = ""
+
+
 default["cinder"]["db"]["name"] = "cinder"                                      # node_attribute
 default["cinder"]["db"]["username"] = "cinder"                                  # node_attribute
 

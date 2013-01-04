@@ -80,6 +80,12 @@ template "/etc/cinder/cinder.conf" do
   group "root"
   mode "0644"
   variables(
+    "netapp_wsdl_url" => node["cinder"]["storage"]["netapp"]["wsdl_url"],
+    "netapp_login" => node["cinder"]["storage"]["netapp"]["login"],
+    "netapp_password" => node["cinder"]["storage"]["netapp"]["password"],
+    "netapp_server_hostname" => node["cinder"]["storage"]["netapp"]["server_hostname"],
+    "netapp_server_port" => node["cinder"]["storage"]["netapp"]["server_port"],
+    "netapp_storage_service" => node["cinder"]["storage"]["netapp"]["storage_service"],
     "db_ip_address" => mysql_info["bind_address"],
     "db_user" => node["cinder"]["db"]["username"],
     "db_password" => node["cinder"]["db"]["password"],
