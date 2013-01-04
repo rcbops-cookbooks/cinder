@@ -63,7 +63,7 @@ rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 # install packages for cinder-api
 platform_options["cinder_api_packages"].each do |pkg|
   package pkg do
-    action :upgrade
+    action :install
     options platform_options["package_overrides"]
   end
 end

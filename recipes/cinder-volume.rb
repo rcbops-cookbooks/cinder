@@ -21,14 +21,14 @@ platform_options = node["cinder"]["platform"]
 
 platform_options["cinder_volume_packages"].each do |pkg|
   package pkg do
-    action :upgrade
+    action :install
     options platform_options["package_overrides"]
   end
 end
 
 platform_options["cinder_iscsitarget_packages"].each do |pkg|
   package pkg do
-    action :upgrade
+    action :install
     options platform_options["package_overrides"]
   end
 end
