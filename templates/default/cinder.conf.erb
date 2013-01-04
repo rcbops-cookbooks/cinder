@@ -1,4 +1,15 @@
 [DEFAULT]
+
+<% if node["cinder"]["storage"]["provider"] == "netappiscsi" %>
+volume_driver = cinder.volume.netapp.NetAppISCSIDriver
+netapp_wsdl_url = <%= @netapp_wsdl_url %>
+netapp_login = <%= @netapp_login %>
+netapp_password = <%= @netapp_password %>
+netapp_server_hostname = <%= @netapp_server_hostname %>
+netapp_server_port = <%= @netapp_server_port %>
+netapp_storage_service = <%= @netapp_storage_service %>
+<% end %>
+
 rootwrap_config = /etc/cinder/rootwrap.conf
 api_paste_confg = /etc/cinder/api-paste.ini
 iscsi_helper = tgtadm
