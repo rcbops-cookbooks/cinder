@@ -58,6 +58,7 @@ mysql_info = create_db_and_user("mysql",
                    node["cinder"]["db"]["username"],
                    node["cinder"]["db"]["password"])
 
+mysql_connect_ip = get_access_endpoint('mysql-master', 'mysql', 'db')["host"]
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 
 # install packages for cinder-api
@@ -86,7 +87,7 @@ template "/etc/cinder/cinder.conf" do
     "netapp_server_hostname" => node["cinder"]["storage"]["netapp"]["server_hostname"],
     "netapp_server_port" => node["cinder"]["storage"]["netapp"]["server_port"],
     "netapp_storage_service" => node["cinder"]["storage"]["netapp"]["storage_service"],
-    "db_ip_address" => mysql_info["bind_address"],
+    "db_ip_address" => mysql_connect_ip,
     "db_user" => node["cinder"]["db"]["username"],
     "db_password" => node["cinder"]["db"]["password"],
     "db_name" => node["cinder"]["db"]["name"],
