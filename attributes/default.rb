@@ -34,6 +34,11 @@ default["cinder"]["syslog"]["use"] = true                                     # 
 default["cinder"]["syslog"]["facility"] = "LOG_LOCAL1"                        # node_attribute
 default["cinder"]["syslog"]["config_facility"] = "local1"                     # node_attribute
 
+# LOGGING LEVEL
+# in order of verbosity (most to least)
+# DEBUG, INFO, WARNING, ERROR, CRITICAL
+default["cinder"]["config"]["log_verbosity"] = "INFO"                       # node_attributes
+
 case platform
 when "fedora", "redhat", "centos"
   default["cinder"]["platform"] = {                                                   # node_attribute

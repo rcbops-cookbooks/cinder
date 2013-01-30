@@ -64,6 +64,7 @@ Attributes
 * `cinder["syslog"]["facility"]`
 * `cinder["syslog"]["config_facility"]`
 * `cinder["platform"]` = hash of platform specific package/service names and options
+* `cinder["config"]["log_verbosity"]` - Logging verbosity.  Valid options are DEBUG, INFO, WARNING, ERROR, CRITICAL.  Default is INFO
 
 Templates
 =====
