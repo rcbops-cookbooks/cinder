@@ -71,6 +71,8 @@ end
 
 # define the command but call it after we drop in our config files
 execute "cinder-manage db sync" do
+  user "cinder"
+  group "cinder"
   command "cinder-manage db sync"
   action :nothing
 end
