@@ -51,11 +51,22 @@ service "cinder-volume" do
   action [ :enable, :start ]
 end
 
+template "/etc/cinder/logging.conf" do
+  source "cinder-logging.conf.erb"
+  owner "cinder"
+  group "cinder"
+  mode "0600"
+  variables("use_syslog" => node["cinder"]["syslog"]["use"],
+            "log_facility" => node["cinder"]["syslog"]["facility"]
+           )
+  notifies :restart, resources(:service => "cinder-volume"), :delayed
+end
+
 template "/etc/cinder/cinder.conf" do
   source "cinder.conf.erb"
-  owner "root"
-  group "root"
-  mode "0644"
+  owner "cinder"
+  group "cinder"
+  mode "0600"
   variables(
     "netapp_wsdl_url" => node["cinder"]["storage"]["netapp"]["wsdl_url"],
     "netapp_login" => node["cinder"]["storage"]["netapp"]["login"],
