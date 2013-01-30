@@ -56,11 +56,22 @@ service "cinder-api" do
   action :enable
 end
 
+template "/etc/cinder/logging.conf" do
+  source "cinder-logging.conf.erb"
+  owner "cinder"
+  group "cinder"
+  mode "0600"
+  variables("use_syslog" => node["cinder"]["syslog"]["use"],
+            "log_facility" => node["cinder"]["syslog"]["facility"]
+           )
+  notifies :restart, resources(:service => "cinder-api"), :delayed
+end
+
 template "/etc/cinder/cinder.conf" do
   source "cinder.conf.erb"
-  owner "root"
-  group "root"
-  mode "0644"
+  owner "cinder"
+  group "cinder"
+  mode "0600"
   variables(
     "netapp_wsdl_url" => node["cinder"]["storage"]["netapp"]["wsdl_url"],
     "netapp_login" => node["cinder"]["storage"]["netapp"]["login"],
@@ -80,9 +91,9 @@ end
 
 template "/etc/cinder/api-paste.ini" do
   source "api-paste.ini.erb"
-  owner "root"
-  group "root"
-  mode "0644"
+  owner "cinder"
+  group "cinder"
+  mode "0600"
   variables(
     "service_tenant_name" => node["cinder"]["service_tenant_name"],
     "service_user" => node["cinder"]["service_user"],
