@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+include_recipe "cinder::cinder-rsyslog"
+
 platform_options = node["cinder"]["platform"]
 
 platform_options["cinder_scheduler_packages"].each do |pkg|

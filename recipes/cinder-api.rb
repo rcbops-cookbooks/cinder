@@ -18,6 +18,7 @@
 #
 
 
+include_recipe "cinder::cinder-rsyslog"
 include_recipe "mysql::client"
 include_recipe "mysql::ruby"
 
