@@ -62,7 +62,8 @@ template "/etc/cinder/logging.conf" do
   group "cinder"
   mode "0600"
   variables("use_syslog" => node["cinder"]["syslog"]["use"],
-            "log_facility" => node["cinder"]["syslog"]["facility"]
+            "log_facility" => node["cinder"]["syslog"]["facility"],
+            "log_verbosity" => node["cinder"]["config"]["log_verbosity"]
            )
   notifies :restart, resources(:service => "cinder-api"), :delayed
 end
