@@ -18,6 +18,7 @@
 #
 
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
+include_recipe "cinder::cinder-rsyslog"
 
 # Allow for using a well known db password
 if node["developer_mode"]
