@@ -24,8 +24,8 @@ include_recipe "mysql::ruby"
 
 platform_options = node["cinder"]["platform"]
 
-ks_service_endpoint = get_access_endpoint("keystone", "keystone", "service-api")
-ks_admin_endpoint = get_access_endpoint("keystone", "keystone", "admin-api")
+ks_service_endpoint = get_access_endpoint("keystone-api", "keystone", "service-api")
+ks_admin_endpoint = get_access_endpoint("keystone-api", "keystone", "admin-api")
 keystone = get_settings_by_role("keystone", "keystone")
 keystone_admin_user = keystone["admin_user"]
 keystone_admin_password = keystone["users"][keystone_admin_user]["password"]
