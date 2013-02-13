@@ -16,7 +16,6 @@ default["cinder"]["storage"]["netapp"]["server_hostname"] = ""
 default["cinder"]["storage"]["netapp"]["server_port"] = "8088"
 default["cinder"]["storage"]["netapp"]["storage_service"] = ""
 
-
 default["cinder"]["db"]["name"] = "cinder"                                      # node_attribute
 default["cinder"]["db"]["username"] = "cinder"                                  # node_attribute
 
