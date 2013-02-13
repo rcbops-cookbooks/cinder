@@ -41,6 +41,7 @@ keystone = get_settings_by_role("keystone", "keystone")
 keystone_admin_user = keystone["admin_user"]
 keystone_admin_password = keystone["users"][keystone_admin_user]["password"]
 keystone_admin_tenant = keystone["users"][keystone_admin_user]["default_tenant"]
+cinder_api = get_bind_endpoint("cinder", "api")
 
 if volume_endpoint = get_access_endpoint("cinder-all", "cinder", "api")
     Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-all role holder using get_access_endpoint")
@@ -106,7 +107,9 @@ template "/etc/cinder/cinder.conf" do
     "db_password" => node["cinder"]["db"]["password"],
     "db_name" => node["cinder"]["db"]["name"],
     "rabbit_ipaddress" => rabbit_info["host"],
-    "rabbit_port" => rabbit_info["port"]
+    "rabbit_port" => rabbit_info["port"],
+    "cinder_api_listen_ip" => cinder_api["host"],
+    "cinder_api_listen_port" => cinder_api["port"]
   )
   notifies :run, resources(:execute => "cinder-manage db sync"), :immediately
 end
