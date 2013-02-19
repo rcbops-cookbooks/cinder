@@ -49,6 +49,13 @@ cinder-volume
 Attributes
 ==========
 
+* `cinder["storage"]["provider"]` - storage provider (lvm/netappiscsi, defaults to lvm)
+* `cinder["storage"]["netapp"]["wsdl_url"]` - NetApp device WSDL URL
+* `cinder["storage"]["netapp"]["login"]` - NetApp device login
+* `cinder["storage"]["netapp"]["password"]` - NetApp device password
+* `cinder["storage"]["netapp"]["server_hostname"]` - NetApp device hostname
+* `cinder["storage"]["netapp"]["server_port"]` - NetApp device port
+* `cinder["storage"]["netapp"]["storage_service"]` - NetApp storage service
 * `cinder["db"]["name"]` - name of database to create for cinder
 * `cinder["db"]["username"]` - cinder username for database
 * `cinder["service_tenant_name"]` - name of tenant to use for the cinder service account in keystone
@@ -61,14 +68,17 @@ Attributes
 * `cinder["syslog"]["use"]`
 * `cinder["syslog"]["facility"]`
 * `cinder["syslog"]["config_facility"]`
-* `cinder["platform"]` = hash of platform specific package/service names and options
 * `cinder["config"]["log_verbosity"]` - Logging verbosity.  Valid options are DEBUG, INFO, WARNING, ERROR, CRITICAL.  Default is INFO
+* `cinder["platform"]` = hash of platform specific package/service names and options
 
 Templates
 =====
+
+* `24-cinder.conf.erb` - rsyslog config file for cinder
 * `api-paste.ini.erb` - Paste config for cinder API middleware
 * `cinder.conf.erb` - Basic cinder.conf file
-* `targets.conf.erb` - config file for tgt (iscsi target software)
+* `cinder-logging.conf.erb` - Logging config for cinder services
+* `targets.conf.erb` - Config file for tgt (iscsi target software)
 
 License and Author
 ==================
