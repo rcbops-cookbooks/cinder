@@ -11,7 +11,7 @@ recipe           "cinder-volume", ""
   supports os
 end
 
-%w{ apt database monitoring osops-utils yum }.each do |dep|
+%w{ apt database monitoring mysql osops-utils yum }.each do |dep|
   depends dep
 end
 

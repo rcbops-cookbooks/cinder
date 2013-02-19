@@ -24,6 +24,7 @@ The following cookbooks are dependencies:
 * apt
 * database
 * monitoring
+* mysql
 * keystone
 * osops-utils
 * yum
