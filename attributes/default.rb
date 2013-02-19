@@ -41,7 +41,7 @@ default["cinder"]["config"]["log_verbosity"] = "INFO"                       # no
 case platform
 when "fedora", "redhat", "centos"
   default["cinder"]["platform"] = {                                                   # node_attribute
-    "cinder_api_packages" => ["openstack-cinder", "python-cinderclient", "MySQL-python"],
+    "cinder_api_packages" => ["openstack-cinder", "python-cinderclient", "MySQL-python", "python-keystone"],
     "cinder_api_service" => "openstack-cinder-api",
     "cinder_volume_packages" => ["openstack-cinder", "MySQL-python"],
     "cinder_volume_service" => "openstack-cinder-volume",
