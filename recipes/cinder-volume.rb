@@ -88,7 +88,7 @@ template "/etc/cinder/cinder.conf" do
     "rabbit_ipaddress" => rabbit_info["host"],
     "rabbit_port" => rabbit_info["port"],
     "cinder_api_listen_ip" => cinder_api["host"],
-    "cinder_api_listen_port" => cinder_api["port"]
+    "cinder_api_listen_port" => cinder_api["port"],
     "iscsi_ip_addr" =>iscsi_ip_addr
   )
   notifies :restart, resources(:service => "cinder-volume"), :delayed
