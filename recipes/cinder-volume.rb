@@ -46,6 +46,10 @@ elsif cinder_info = get_settings_by_recipe("cinder::cinder-setup", "cinder")
     Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup recipe holder")
 end
 
+# use osops-utils' IPManagement library to find net-interface(IP) for cinder network.
+# for this to work, you need to add "cinder" network CIDR to "osops_networks" in your environment file.
+iscsi_ip_addr = ::Chef::Recipe::IPManagement.get_ip_for_net("cinder",node)
+
 # set to enabled right now but can be toggled
 service "cinder-volume" do
   service_name platform_options["cinder_volume_service"]
@@ -84,7 +88,8 @@ template "/etc/cinder/cinder.conf" do
     "rabbit_ipaddress" => rabbit_info["host"],
     "rabbit_port" => rabbit_info["port"],
     "cinder_api_listen_ip" => cinder_api["host"],
-    "cinder_api_listen_port" => cinder_api["port"]
+    "cinder_api_listen_port" => cinder_api["port"],
+    "iscsi_ip_addr" =>iscsi_ip_addr
   )
   notifies :restart, resources(:service => "cinder-volume"), :delayed
 end
