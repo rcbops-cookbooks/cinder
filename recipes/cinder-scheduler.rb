@@ -28,17 +28,20 @@ platform_options["cinder_scheduler_packages"].each do |pkg|
   end
 end
 
+if cinder_info = get_settings_by_role("cinder-setup", "cinder")
+    Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup role holder")
+elsif cinder_info = get_settings_by_role("nova-volume", "cinder")
+    Chef::Log.info("cinder::cinder-volume got cinder_info from nova-volume role holder")
+elsif cinder_info = get_settings_by_recipe("cinder::cinder-setup", "cinder")
+    Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup recipe holder")
+end
+
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
 cinder_api = get_bind_endpoint("cinder", "api")
 
-if cinder_info = get_settings_by_role("cinder-setup", "cinder")
-    Chef::Log.info("cinder::cinder-scheduler got cinder_info from cinder-setup role holder")
-elsif cinder_info = get_settings_by_role("nova-volume", "cinder")
-    Chef::Log.info("cinder::cinder-scheduler got cinder_info from nova-volume role holder")
-elsif cinder_info = get_settings_by_recipe("cinder::cinder-setup", "cinder")
-    Chef::Log.info("cinder::cinder-scheduler got cinder_info from cinder-setup recipe holder")
-end
+cinder_volume_network = node["cinder"]["services"]["volume"]["network"]
+iscsi_ip_address = get_ip_for_net(cinder_volume_network)
 
 service "cinder-scheduler" do
   service_name platform_options["cinder_scheduler_service"]
@@ -77,7 +80,8 @@ template "/etc/cinder/cinder.conf" do
     "rabbit_ipaddress" => rabbit_info["host"],
     "rabbit_port" => rabbit_info["port"],
     "cinder_api_listen_ip" => cinder_api["host"],
-    "cinder_api_listen_port" => cinder_api["port"]
+    "cinder_api_listen_port" => cinder_api["port"],
+    "iscsi_ip_address" => iscsi_ip_address
   )
   notifies :restart, resources(:service => "cinder-scheduler"), :delayed
 end

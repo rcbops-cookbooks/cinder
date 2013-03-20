@@ -28,6 +28,10 @@ default["cinder"]["services"]["api"]["network"] = "public"                 # nod
 default["cinder"]["services"]["api"]["port"] = 8776                        # node_attribute
 default["cinder"]["services"]["api"]["path"] = "/v1/%(tenant_id)s"         # node_attribute
 
+# can use a separate 'cinder' network if so desired. Define this network in
+# your environment in the same way you define management/nova etc networks
+default["cinder"]["services"]["volume"]["network"] = "management"                 # node_attribute
+
 # Logging stuff
 default["cinder"]["syslog"]["use"] = true                                    # node_attribute
 default["cinder"]["syslog"]["facility"] = "LOG_LOCAL4"                        # node_attribute
