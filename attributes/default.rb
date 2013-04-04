@@ -41,6 +41,7 @@ default["cinder"]["syslog"]["config_facility"] = "local4"                     # 
 # in order of verbosity (most to least)
 # DEBUG, INFO, WARNING, ERROR, CRITICAL
 default["cinder"]["config"]["log_verbosity"] = "INFO"                       # node_attributes
+default["cinder"]["config"]["storage_availability_zone"] = "nova"                       # node_attributes
 
 case platform
 when "fedora", "redhat", "centos"
