@@ -81,6 +81,7 @@ template "/etc/cinder/cinder.conf" do
     "rabbit_port" => rabbit_info["port"],
     "cinder_api_listen_ip" => cinder_api["host"],
     "cinder_api_listen_port" => cinder_api["port"],
+    "storage_availability_zone" => node["cinder"]["config"]["storage_availability_zone"],
     "iscsi_ip_address" => iscsi_ip_address
   )
   notifies :restart, resources(:service => "cinder-scheduler"), :delayed
