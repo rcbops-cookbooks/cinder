@@ -72,11 +72,6 @@ template "/etc/cinder/api-paste.ini" do
   notifies :restart, resources(:service => "cinder-api"), :delayed
 end
 
-# now we are using mysql, ditch the original sqlite file
-file "/var/lib/cinder/cinder.sqlite" do
-      action :delete
-end
-
 monitoring_procmon "cinder-api" do
   service_name=platform_options["cinder_api_service"]
   process_name "cinder-api"
