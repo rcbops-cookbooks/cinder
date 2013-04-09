@@ -18,7 +18,6 @@
 #
 
 platform_options = node["cinder"]["platform"]
-include_recipe "cinder::cinder-rsyslog"
 
 platform_options["cinder_volume_packages"].each do |pkg|
   package pkg do
