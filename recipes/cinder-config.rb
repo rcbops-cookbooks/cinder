@@ -18,7 +18,6 @@
 #
 
 platform_options = node["cinder"]["platform"]
-include_recipe "cinder::cinder-rsyslog"
 
 if cinder_info = get_settings_by_role("cinder-setup", "cinder")
     Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup role holder")
