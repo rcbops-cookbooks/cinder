@@ -79,17 +79,6 @@ execute "cinder-manage db sync" do
   action :nothing
 end
 
-template "/etc/cinder/logging.conf" do
-  source "cinder-logging.conf.erb"
-  owner "cinder"
-  group "cinder"
-  mode "0600"
-  variables("use_syslog" => node["cinder"]["syslog"]["use"],
-            "log_facility" => node["cinder"]["syslog"]["facility"],
-            "log_verbosity" => node["cinder"]["config"]["log_verbosity"]
-           )
-end
-
 template "/etc/cinder/cinder.conf" do
   source "cinder.conf.erb"
   owner "cinder"
@@ -173,7 +162,7 @@ keystone_user "Register Service User" do
   tenant_name node["cinder"]["service_tenant_name"]
   user_name node["cinder"]["service_user"]
   user_pass node["cinder"]["service_pass"]
-  user_enabled "true" # Not required as this is the default
+  user_enabled "1" # Not required as this is the default
   action :create
 end
 
