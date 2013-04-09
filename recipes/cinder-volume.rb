@@ -56,18 +56,6 @@ service "cinder-volume" do
   action [ :enable, :start ]
 end
 
-template "/etc/cinder/logging.conf" do
-  source "cinder-logging.conf.erb"
-  owner "cinder"
-  group "cinder"
-  mode "0600"
-  variables("use_syslog" => node["cinder"]["syslog"]["use"],
-            "log_facility" => node["cinder"]["syslog"]["facility"],
-            "log_verbosity" => node["cinder"]["config"]["log_verbosity"]
-           )
-  notifies :restart, resources(:service => "cinder-volume"), :delayed
-end
-
 template "/etc/cinder/cinder.conf" do
   source "cinder.conf.erb"
   owner "cinder"
