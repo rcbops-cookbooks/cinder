@@ -33,15 +33,15 @@ platform_options["cinder_iscsitarget_packages"].each do |pkg|
   end
 end
 
+include_recipe "cinder::cinder-config"
+
 # set to enabled right now but can be toggled
 service "cinder-volume" do
   service_name platform_options["cinder_volume_service"]
   supports :status => true, :restart => true
   action [ :enable ]
-  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
+#  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
-
-include_recipe "cinder::cinder-config"
 
 service "iscsitarget" do
   service_name platform_options["cinder_iscsitarget_service"]
