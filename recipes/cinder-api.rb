@@ -52,7 +52,6 @@ service "cinder-api" do
   service_name platform_options["cinder_api_service"]
   supports :status => true, :restart => true
   action :enable
-  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
 
 template "/etc/cinder/api-paste.ini" do

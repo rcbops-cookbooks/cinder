@@ -31,8 +31,6 @@ include_recipe "cinder::cinder-config"
 service "cinder-scheduler" do
   service_name platform_options["cinder_scheduler_service"]
   supports :status => true, :restart => true
-  action [ :enable ]
-  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
 
 monitoring_procmon "cinder-scheduler" do

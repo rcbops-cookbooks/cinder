@@ -39,8 +39,6 @@ include_recipe "cinder::cinder-config"
 service "cinder-volume" do
   service_name platform_options["cinder_volume_service"]
   supports :status => true, :restart => true
-  action [ :enable ]
-#  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
 
 service "iscsitarget" do

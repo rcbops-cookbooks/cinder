@@ -72,7 +72,6 @@ execute "cinder-manage db sync" do
   group "cinder"
   command "cinder-manage db sync"
   action :nothing
-  subscribes :run, resources(:template => "/etc/cinder/cinder.conf"), :immediately
 end
 
 # Register Cinder Volume Service
@@ -113,7 +112,7 @@ keystone_user "Register Cinder Service User" do
   tenant_name node["cinder"]["service_tenant_name"]
   user_name node["cinder"]["service_user"]
   user_pass node["cinder"]["service_pass"]
-  user_enabled "true" # Not required as this is the default
+  user_enabled "1" # Not required as this is the default
   action :create
 end
 
