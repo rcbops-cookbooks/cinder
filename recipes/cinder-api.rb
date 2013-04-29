@@ -17,8 +17,6 @@
 # limitations under the License.
 #
 
-
-include_recipe "cinder::cinder-rsyslog"
 include_recipe "mysql::client"
 include_recipe "mysql::ruby"
 
@@ -39,13 +37,6 @@ elsif cinder_info = get_settings_by_recipe("cinder::cinder-setup", "cinder")
     Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup recipe holder")
 end
 
-rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
-mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
-cinder_api = get_bind_endpoint("cinder", "api")
-
-cinder_volume_network = node["cinder"]["services"]["volume"]["network"]
-iscsi_ip_address = get_ip_for_net(cinder_volume_network)
-
 # install packages for cinder-api
 platform_options["cinder_api_packages"].each do |pkg|
   package pkg do
@@ -54,37 +45,14 @@ platform_options["cinder_api_packages"].each do |pkg|
   end
 end
 
+include_recipe "cinder::cinder-config"
+
 # define the cinder-api service so we can call it later
 service "cinder-api" do
   service_name platform_options["cinder_api_service"]
   supports :status => true, :restart => true
   action :enable
-end
-
-template "/etc/cinder/cinder.conf" do
-  source "cinder.conf.erb"
-  owner "cinder"
-  group "cinder"
-  mode "0600"
-  variables(
-    "netapp_wsdl_url" => node["cinder"]["storage"]["netapp"]["wsdl_url"],
-    "netapp_login" => node["cinder"]["storage"]["netapp"]["login"],
-    "netapp_password" => node["cinder"]["storage"]["netapp"]["password"],
-    "netapp_server_hostname" => node["cinder"]["storage"]["netapp"]["server_hostname"],
-    "netapp_server_port" => node["cinder"]["storage"]["netapp"]["server_port"],
-    "netapp_storage_service" => node["cinder"]["storage"]["netapp"]["storage_service"],
-    "db_ip_address" => mysql_info["host"],
-    "db_user" => node["cinder"]["db"]["username"],
-    "db_password" => cinder_info["db"]["password"],
-    "db_name" => node["cinder"]["db"]["name"],
-    "rabbit_ipaddress" => rabbit_info["host"],
-    "rabbit_port" => rabbit_info["port"],
-    "cinder_api_listen_ip" => cinder_api["host"],
-    "cinder_api_listen_port" => cinder_api["port"],
-    "storage_availability_zone" => node["cinder"]["config"]["storage_availability_zone"],
-    "iscsi_ip_address" => iscsi_ip_address
-  )
-  notifies :restart, resources(:service => "cinder-api"), :delayed
+  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
 end
 
 template "/etc/cinder/api-paste.ini" do
@@ -102,11 +70,6 @@ template "/etc/cinder/api-paste.ini" do
     "admin_token" => keystone["admin_token"]
   )
   notifies :restart, resources(:service => "cinder-api"), :delayed
-end
-
-# now we are using mysql, ditch the original sqlite file
-file "/var/lib/cinder/cinder.sqlite" do
-      action :delete
 end
 
 monitoring_procmon "cinder-api" do
