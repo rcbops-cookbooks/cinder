@@ -60,11 +60,7 @@ rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 # install packages for cinder-api
 platform_options["cinder_api_packages"].each do |pkg|
   package pkg do
-    if node["osops"]["do_package_upgrades"]
-      action :upgrade
-    else
-      action :install
-    end
+    action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
     options platform_options["package_overrides"]
   end
 end
