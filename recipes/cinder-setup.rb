@@ -18,7 +18,6 @@
 #
 
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
-include_recipe "cinder::cinder-rsyslog"
 
 # Allow for using a well known db password
 if node["developer_mode"]
@@ -35,13 +34,8 @@ include_recipe "mysql::ruby"
 
 platform_options = node["cinder"]["platform"]
 
-ks_service_endpoint = get_access_endpoint("keystone-api", "keystone", "service-api")
 ks_admin_endpoint = get_access_endpoint("keystone-api", "keystone", "admin-api")
 keystone = get_settings_by_role("keystone", "keystone")
-keystone_admin_user = keystone["admin_user"]
-keystone_admin_password = keystone["users"][keystone_admin_user]["password"]
-keystone_admin_tenant = keystone["users"][keystone_admin_user]["default_tenant"]
-cinder_api = get_bind_endpoint("cinder", "api")
 
 if volume_endpoint = get_access_endpoint("cinder-all", "cinder", "api")
     Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-all role holder using get_access_endpoint")
@@ -66,66 +60,23 @@ rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 # install packages for cinder-api
 platform_options["cinder_api_packages"].each do |pkg|
   package pkg do
-    action :install
+    action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
     options platform_options["package_overrides"]
   end
 end
 
-# define the command but call it after we drop in our config files
+include_recipe "cinder::cinder-config"
+
 execute "cinder-manage db sync" do
   user "cinder"
   group "cinder"
   command "cinder-manage db sync"
   action :nothing
-end
-
-template "/etc/cinder/cinder.conf" do
-  source "cinder.conf.erb"
-  owner "cinder"
-  group "cinder"
-  mode "0600"
-  variables(
-    "netapp_wsdl_url" => node["cinder"]["storage"]["netapp"]["wsdl_url"],
-    "netapp_login" => node["cinder"]["storage"]["netapp"]["login"],
-    "netapp_password" => node["cinder"]["storage"]["netapp"]["password"],
-    "netapp_server_hostname" => node["cinder"]["storage"]["netapp"]["server_hostname"],
-    "netapp_server_port" => node["cinder"]["storage"]["netapp"]["server_port"],
-    "netapp_storage_service" => node["cinder"]["storage"]["netapp"]["storage_service"],
-    "db_ip_address" => mysql_connect_ip,
-    "db_user" => node["cinder"]["db"]["username"],
-    "db_password" => node["cinder"]["db"]["password"],
-    "db_name" => node["cinder"]["db"]["name"],
-    "rabbit_ipaddress" => rabbit_info["host"],
-    "rabbit_port" => rabbit_info["port"],
-    "cinder_api_listen_ip" => cinder_api["host"],
-    "cinder_api_listen_port" => cinder_api["port"]
-  )
-  notifies :run, resources(:execute => "cinder-manage db sync"), :immediately
-end
-
-template "/etc/cinder/api-paste.ini" do
-  source "api-paste.ini.erb"
-  owner "cinder"
-  group "cinder"
-  mode "0600"
-  variables(
-    "service_tenant_name" => node["cinder"]["service_tenant_name"],
-    "service_user" => node["cinder"]["service_user"],
-    "service_pass" => node["cinder"]["service_pass"],
-    "keystone_api_ipaddress" => ks_service_endpoint["host"],
-    "service_port" => ks_service_endpoint["port"],
-    "admin_port" => ks_admin_endpoint["port"],
-    "admin_token" => keystone["admin_token"]
-  )
-end
-
-# now we are using mysql, ditch the original sqlite file
-file "/var/lib/cinder/cinder.sqlite" do
-      action :delete
+  subscribes :run, resources(:template => "/etc/cinder/cinder.conf"), :immediately
 end
 
 # Register Cinder Volume Service
-keystone_service "Register Cinder Volume Service" do
+keystone_service "Register Cinder Service" do
   auth_host ks_admin_endpoint["host"]
   auth_port ks_admin_endpoint["port"]
   auth_protocol ks_admin_endpoint["scheme"]
@@ -138,7 +89,7 @@ keystone_service "Register Cinder Volume Service" do
 end
 
 # Register Cinder Endpoint
-keystone_endpoint "Register Volume Endpoint" do
+keystone_endpoint "Register Cinder Endpoint" do
   auth_host ks_admin_endpoint["host"]
   auth_port ks_admin_endpoint["port"]
   auth_protocol ks_admin_endpoint["scheme"]
@@ -153,7 +104,7 @@ keystone_endpoint "Register Volume Endpoint" do
 end
 
 # Register Service User
-keystone_user "Register Service User" do
+keystone_user "Register Cinder Service User" do
   auth_host ks_admin_endpoint["host"]
   auth_port ks_admin_endpoint["port"]
   auth_protocol ks_admin_endpoint["scheme"]
