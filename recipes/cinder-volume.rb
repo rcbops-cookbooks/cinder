@@ -35,7 +35,7 @@ service "cinder-volume" do
   service_name platform_options["cinder_volume_service"]
   supports :status => true, :restart => true
   action [ :enable ]
-  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
+  subscribes :restart, "template[/etc/cinder/cinder.conf]", :delayed
 end
 
 service "iscsitarget" do
@@ -47,7 +47,7 @@ end
 template "/etc/tgt/targets.conf" do
   source "targets.conf.erb"
   mode "600"
-  notifies :restart, resources(:service => "iscsitarget"), :immediately
+  notifies :restart, "service[iscsitarget]", :immediately
 end
 
 monitoring_procmon "cinder-volume" do

@@ -52,7 +52,7 @@ service "cinder-api" do
   service_name platform_options["cinder_api_service"]
   supports :status => true, :restart => true
   action :enable
-  subscribes :restart, resources(:template => "/etc/cinder/cinder.conf"), :delayed
+  subscribes :restart, "template[/etc/cinder/cinder.conf]", :delayed
 end
 
 template "/etc/cinder/api-paste.ini" do
@@ -69,7 +69,7 @@ template "/etc/cinder/api-paste.ini" do
     "admin_port" => ks_admin_endpoint["port"],
     "admin_token" => keystone["admin_token"]
   )
-  notifies :restart, resources(:service => "cinder-api"), :delayed
+  notifies :restart, "service[cinder-api]", :delayed
 end
 
 monitoring_procmon "cinder-api" do
