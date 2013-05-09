@@ -28,7 +28,7 @@ pkgs.each do |pkg|
   end
 end
 
-include_recipe "cinder::cinder-config"
+include_recipe "cinder::cinder-common"
 
 # set to enabled right now but can be toggled
 service "cinder-volume" do

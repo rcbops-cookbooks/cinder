@@ -45,7 +45,7 @@ platform_options["cinder_api_packages"].each do |pkg|
   end
 end
 
-include_recipe "cinder::cinder-config"
+include_recipe "cinder::cinder-common"
 
 # define the cinder-api service so we can call it later
 service "cinder-api" do

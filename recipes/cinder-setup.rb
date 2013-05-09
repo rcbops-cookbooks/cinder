@@ -65,7 +65,7 @@ platform_options["cinder_api_packages"].each do |pkg|
   end
 end
 
-include_recipe "cinder::cinder-config"
+include_recipe "cinder::cinder-common"
 
 execute "cinder-manage db sync" do
   user "cinder"

@@ -26,7 +26,7 @@ platform_options["cinder_scheduler_packages"].each do |pkg|
   end
 end
 
-include_recipe "cinder::cinder-config"
+include_recipe "cinder::cinder-common"
 
 service "cinder-scheduler" do
   service_name platform_options["cinder_scheduler_service"]
