@@ -43,29 +43,31 @@ default["cinder"]["syslog"]["config_facility"] = "local4"                     # 
 default["cinder"]["config"]["log_verbosity"] = "INFO"                       # node_attributes
 default["cinder"]["config"]["storage_availability_zone"] = "nova"                       # node_attributes
 
-case platform
-when "fedora", "redhat", "centos"
+case platform_family
+when "rhel"
   default["cinder"]["platform"] = {                                                   # node_attribute
-    "cinder_api_packages" => ["openstack-cinder", "python-cinderclient", "MySQL-python", "python-keystone"],
+    "cinder_api_packages" => ["openstack-cinder"],
     "cinder_api_service" => "openstack-cinder-api",
-    "cinder_volume_packages" => ["openstack-cinder", "MySQL-python"],
+    "cinder_volume_packages" => ["openstack-cinder"],
     "cinder_volume_service" => "openstack-cinder-volume",
-    "cinder_scheduler_packages" => ["openstack-cinder", "MySQL-python"],
+    "cinder_scheduler_packages" => ["openstack-cinder"],
     "cinder_scheduler_service" => "openstack-cinder-scheduler",
     "cinder_iscsitarget_packages" => ["scsi-target-utils"],
     "cinder_iscsitarget_service" => "tgtd",
+    "supporting_packages" => ["python-cinderclient", "MySQL-python", "python-keystone"]
     "package_overrides" => ""
   }
-when "ubuntu"
+when "debian"
   default["cinder"]["platform"] = {                                                   # node_attribute
-    "cinder_api_packages" => ["cinder-common", "cinder-api", "python-cinderclient", "python-mysqldb"],
+    "cinder_api_packages" => ["cinder-common", "cinder-api"]
     "cinder_api_service" => "cinder-api",
-    "cinder_volume_packages" => ["cinder-volume", "python-mysqldb"],
+    "cinder_volume_packages" => ["cinder-volume"],
     "cinder_volume_service" => "cinder-volume",
-    "cinder_scheduler_packages" => ["cinder-scheduler", "python-mysqldb"],
+    "cinder_scheduler_packages" => ["cinder-scheduler"],
     "cinder_scheduler_service" => "cinder-scheduler",
     "cinder_iscsitarget_packages" => ["tgt"],
     "cinder_iscsitarget_service" => "tgt",
+    "supporting_packages" => ["python-cinderclient", "python-mysqldb"]
     "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
   }
 end
