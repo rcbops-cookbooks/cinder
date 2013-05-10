@@ -47,6 +47,10 @@ The following cookbooks are dependencies:
 Recipes
 =======
 
+cinder-common
+----
+- Installs common packages and configs
+
 cinder-api
 ----
 - Installs the cinder-api, sets up the cinder database,
@@ -59,7 +63,6 @@ cinder-scheduler
 cinder-volume
 ----
 - Installs the cinder-volume service and sets up the iscsi helper
-
 
 Attributes
 ==========

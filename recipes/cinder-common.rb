@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cinder
-# Recipe:: cinder-volume
+# Recipe:: cinder-common
 #
 # Copyright 2012, Rackspace US, Inc.
 #
@@ -25,6 +25,13 @@ elsif cinder_info = get_settings_by_role("nova-volume", "cinder")
     Chef::Log.info("cinder::cinder-volume got cinder_info from nova-volume role holder")
 elsif cinder_info = get_settings_by_recipe("cinder::cinder-setup", "cinder")
     Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup recipe holder")
+end
+
+platform_options["supporting_packages"].each do |pkg|
+  package pkg do
+    action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+    options platform_options["package_overrides"]
+  end
 end
 
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
