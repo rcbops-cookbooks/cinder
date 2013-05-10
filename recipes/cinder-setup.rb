@@ -65,14 +65,14 @@ platform_options["cinder_api_packages"].each do |pkg|
   end
 end
 
-include_recipe "cinder::cinder-config"
+include_recipe "cinder::cinder-common"
 
 execute "cinder-manage db sync" do
   user "cinder"
   group "cinder"
   command "cinder-manage db sync"
   action :nothing
-  subscribes :run, resources(:template => "/etc/cinder/cinder.conf"), :immediately
+  subscribes :run, "template[/etc/cinder/cinder.conf]", :immediately
 end
 
 # Register Cinder Volume Service
