@@ -20,11 +20,9 @@
 platform_options = node["cinder"]["platform"]
 
 if cinder_info = get_settings_by_role("cinder-setup", "cinder")
-    Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup role holder")
-elsif cinder_info = get_settings_by_role("nova-volume", "cinder")
-    Chef::Log.info("cinder::cinder-volume got cinder_info from nova-volume role holder")
+  Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup role holder")
 elsif cinder_info = get_settings_by_recipe("cinder::cinder-setup", "cinder")
-    Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup recipe holder")
+  Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup recipe holder")
 end
 
 platform_options["supporting_packages"].each do |pkg|
@@ -34,10 +32,13 @@ platform_options["supporting_packages"].each do |pkg|
   end
 end
 
+# Search for rabbit endpoint info
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
+# Search for mysql endpoint info
 mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
-cinder_api = get_bind_endpoint("cinder", "api")
-
+# Search for cinder endpoint info
+cinder_bind = get_bind_endpoint("cinder", "api")
+# get IP to use for iscsi traffic
 cinder_volume_network = node["cinder"]["services"]["volume"]["network"]
 iscsi_ip_address = get_ip_for_net(cinder_volume_network)
 
@@ -46,10 +47,11 @@ template "/etc/cinder/logging.conf" do
   owner "cinder"
   group "cinder"
   mode "0600"
-  variables("use_syslog" => node["cinder"]["syslog"]["use"],
-            "log_facility" => node["cinder"]["syslog"]["facility"],
-            "log_verbosity" => node["cinder"]["config"]["log_verbosity"]
-           )
+  variables(
+    "use_syslog" => node["cinder"]["syslog"]["use"],
+    "log_facility" => node["cinder"]["syslog"]["facility"],
+    "log_verbosity" => node["cinder"]["config"]["log_verbosity"]
+  )
 end
 
 template "/etc/cinder/cinder.conf" do
@@ -70,27 +72,27 @@ template "/etc/cinder/cinder.conf" do
     "db_name" => node["cinder"]["db"]["name"],
     "rabbit_ipaddress" => rabbit_info["host"],
     "rabbit_port" => rabbit_info["port"],
-    "cinder_api_listen_ip" => cinder_api["host"],
-    "cinder_api_listen_port" => cinder_api["port"],
+    "cinder_api_listen_ip" => cinder_bind["host"],
+    "cinder_api_listen_port" => cinder_bind["port"],
     "storage_availability_zone" => node["cinder"]["config"]["storage_availability_zone"],
     "iscsi_ip_address" => iscsi_ip_address
   )
 end
 
 template "/etc/rsyslog.d/24-cinder.conf" do
-    source "24-cinder.conf.erb"
-    owner "root"
-    group "root"
-    mode "0644"
-    variables(
-        "use_syslog" => node["cinder"]["syslog"]["use"],
-        "log_facility" => node["cinder"]["syslog"]["config_facility"]
-    )
-    only_if { node["cinder"]["syslog"]["use"] }
-    notifies :restart, "service[rsyslog]", :delayed
+  source "24-cinder.conf.erb"
+  owner "root"
+  group "root"
+  mode "0644"
+  variables(
+    "use_syslog" => node["cinder"]["syslog"]["use"],
+    "log_facility" => node["cinder"]["syslog"]["config_facility"]
+  )
+  only_if { node["cinder"]["syslog"]["use"] }
+  notifies :restart, "service[rsyslog]", :delayed
 end
 
 # now we are using mysql in the config file, ditch the original sqlite file
 file "/var/lib/cinder/cinder.sqlite" do
-      action :delete
+  action :delete
 end

@@ -19,7 +19,8 @@
 
 platform_options = node["cinder"]["platform"]
 
-pkgs = platform_options["cinder_volume_packages"] + platform_options["cinder_iscsitarget_packages"]
+pkgs = platform_options["cinder_volume_packages"]
+  + platform_options["cinder_iscsitarget_packages"]
 
 pkgs.each do |pkg|
   package pkg do
@@ -34,7 +35,7 @@ include_recipe "cinder::cinder-common"
 service "cinder-volume" do
   service_name platform_options["cinder_volume_service"]
   supports :status => true, :restart => true
-  action [ :enable ]
+  action :enable
   subscribes :restart, "template[/etc/cinder/cinder.conf]", :delayed
 end
 
