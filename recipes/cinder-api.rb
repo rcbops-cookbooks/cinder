@@ -27,17 +27,14 @@ ks_api_role = "keystone-api"
 ks_ns = "keystone"
 ks_admin_endpoint = get_access_endpoint(ks_api_role, ks_ns, "admin-api")
 ks_service_endpoint = get_access_endpoint(ks_api_role, ks_ns, "service-api")
-# Get settings from role[keystone-setup]
+# Get keystone settings from role[keystone-setup]
 keystone = get_settings_by_role("keystone-setup", "keystone")
 keystone_admin_user = keystone["admin_user"]
 keystone_admin_password = keystone["users"][keystone_admin_user]["password"]
 keystone_admin_tenant = keystone["users"][keystone_admin_user]["default_tenant"]
 
-if cinder_info = get_settings_by_role("cinder-setup", "cinder")
-  Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup role holder")
-elsif cinder_info = get_settings_by_recipe("cinder::cinder-setup", "cinder")
-  Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup recipe holder")
-end
+# Get cinder settings from role[cinder-setup]
+cinder_info = get_settings_by_role("cinder-setup", "cinder")
 
 # install packages for cinder-api
 platform_options["cinder_api_packages"].each do |pkg|

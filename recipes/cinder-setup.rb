@@ -41,13 +41,10 @@ ks_admin_endpoint = get_access_endpoint(ks_api_role, ks_ns, "admin-api")
 # Get settings from role[keystone-setup]
 keystone = get_settings_by_role("keystone-setup", "keystone")
 
-if volume_endpoint = get_access_endpoint("cinder-all", "cinder", "api")
-  Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-all role holder using get_access_endpoint")
-elsif volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
-  Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from nova-volume role holder using get_access_endpoint")
-end
+# Search for cinder endpoint info
+cinder_endpoint = get_access_endpoint("cinder-api", "cinder", "api")
 
-Chef::Log.debug("volume_endpoint contains: #{volume_endpoint}")
+Chef::Log.debug("cinder_endpoint contains: #{cinder_endpoint}")
 
 #creates cinder db and user and returns connection info
 mysql_info = create_db_and_user(
@@ -99,9 +96,9 @@ keystone_endpoint "Register Cinder Endpoint" do
   auth_token keystone["admin_token"]
   service_type "volume"
   endpoint_region "RegionOne"
-  endpoint_adminurl volume_endpoint["uri"]
-  endpoint_internalurl volume_endpoint["uri"]
-  endpoint_publicurl volume_endpoint["uri"]
+  endpoint_adminurl cinder_endpoint["uri"]
+  endpoint_internalurl cinder_endpoint["uri"]
+  endpoint_publicurl cinder_endpoint["uri"]
   action :create
 end
 
