@@ -54,12 +54,12 @@ when "rhel"
     "cinder_scheduler_service" => "openstack-cinder-scheduler",
     "cinder_iscsitarget_packages" => ["scsi-target-utils"],
     "cinder_iscsitarget_service" => "tgtd",
-    "supporting_packages" => ["python-cinderclient", "MySQL-python", "python-keystone"]
+    "supporting_packages" => ["python-cinderclient", "MySQL-python", "python-keystone"],
     "package_overrides" => ""
   }
 when "debian"
   default["cinder"]["platform"] = {                                                   # node_attribute
-    "cinder_api_packages" => ["cinder-common", "cinder-api"]
+    "cinder_api_packages" => ["cinder-common", "cinder-api"],
     "cinder_api_service" => "cinder-api",
     "cinder_volume_packages" => ["cinder-volume"],
     "cinder_volume_service" => "cinder-volume",
@@ -67,7 +67,7 @@ when "debian"
     "cinder_scheduler_service" => "cinder-scheduler",
     "cinder_iscsitarget_packages" => ["tgt"],
     "cinder_iscsitarget_service" => "tgt",
-    "supporting_packages" => ["python-cinderclient", "python-mysqldb"]
+    "supporting_packages" => ["python-cinderclient", "python-mysqldb"],
     "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
   }
 end
