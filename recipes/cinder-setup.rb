@@ -34,28 +34,30 @@ include_recipe "mysql::ruby"
 
 platform_options = node["cinder"]["platform"]
 
-ks_admin_endpoint = get_access_endpoint("keystone-api", "keystone", "admin-api")
-keystone = get_settings_by_role("keystone", "keystone")
+# Search for keystone endpoint info
+ks_api_role = "keystone-api"
+ks_ns = "keystone"
+ks_admin_endpoint = get_access_endpoint(ks_api_role, ks_ns, "admin-api")
+# Get settings from role[keystone-setup]
+keystone = get_settings_by_role("keystone-setup", "keystone")
 
 if volume_endpoint = get_access_endpoint("cinder-all", "cinder", "api")
-    Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-all role holder using get_access_endpoint")
-elsif volume_endpoint = get_bind_endpoint("cinder", "api")
-    Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-api role holder using get_bind_endpoint")
+  Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-all role holder using get_access_endpoint")
 elsif volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
-    Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from nova-volume role holder using get_access_endpoint")
+  Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from nova-volume role holder using get_access_endpoint")
 end
 
 Chef::Log.debug("volume_endpoint contains: #{volume_endpoint}")
 
-#creates cinder db and user
-#function defined in osops-utils/libraries
-mysql_info = create_db_and_user("mysql",
-                   node["cinder"]["db"]["name"],
-                   node["cinder"]["db"]["username"],
-                   node["cinder"]["db"]["password"])
+#creates cinder db and user and returns connection info
+mysql_info = create_db_and_user(
+  "mysql",
+  node["cinder"]["db"]["name"],
+  node["cinder"]["db"]["username"],
+  node["cinder"]["db"]["password"]
+)
 
 mysql_connect_ip = get_access_endpoint('mysql-master', 'mysql', 'db')["host"]
-rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 
 # install packages for cinder-api
 platform_options["cinder_api_packages"].each do |pkg|
