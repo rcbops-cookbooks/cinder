@@ -35,7 +35,7 @@ include_recipe "mysql::ruby"
 platform_options = node["cinder"]["platform"]
 
 ks_admin_endpoint = get_access_endpoint("keystone-api", "keystone", "admin-api")
-keystone = get_settings_by_role("keystone", "keystone")
+keystone = get_settings_by_role("keystone-setup", "keystone")
 
 if volume_endpoint = get_access_endpoint("cinder-all", "cinder", "api")
     Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-all role holder using get_access_endpoint")
