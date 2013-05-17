@@ -73,9 +73,15 @@ Attributes
 * `cinder["storage"]["netapp"]["server_hostname"]` - NetApp device hostname
 * `cinder["storage"]["netapp"]["server_port"]` - NetApp device port
 * `cinder["storage"]["netapp"]["storage_service"]` - NetApp storage service
-* `cinder["storage"]["solidfire"]["mvip"] - Solidfire Storage Service VIP
-* `cinder["storage"]["solidfire"]["username"] - Solidfire Storage Service Admin Username
-* `cinder["storage"]["soldifire"]["password"] - Solidfire Storage Service Admin Password
+* `cinder["storage"]["solidfire"]["mvip"]` - Solidfire Storage Service VIP
+* `cinder["storage"]["solidfire"]["username"]` - Solidfire Storage Service Admin Username
+* `cinder["storage"]["solidfire"]["password"]` - Solidfire Storage Service Admin Password
+* `cinder["storage"]["emc"]["config"]` = "/etc/cinder/cinder_emc_config.xml"
+* `cinder["storage"]["emc"]["StorageType"]` - EMC Storage Type
+* `cinder["storage"]["emc"]["EcomServerIP"]` - IP Address of EMC ECOM
+* `cinder["storage"]["emc"]["EcomServerPort"]` - EMC ECOM Port
+* `cinder["storage"]["emc"]["EcomUserName"]` - EMC ECOM User
+* `cinder["storage"]["emc"]["EcomPassword"]` - EMC ECOM Password
 * `cinder["db"]["name"]` - name of database to create for cinder
 * `cinder["db"]["username"]` - cinder username for database
 * `cinder["service_tenant_name"]` - name of tenant to use for the cinder service account in keystone
@@ -99,6 +105,34 @@ Templates
 * `cinder.conf.erb` - Basic cinder.conf file
 * `cinder-logging.conf.erb` - Logging config for cinder services
 * `targets.conf.erb` - Config file for tgt (iscsi target software)
+
+Usage
+======
+
+Default (LVM)
+-------------
+
+By default, the 'lvm' provider is chosen.  No special configuration is
+necessary on the chef side, but the cinder volume node must have an
+lvm volume group named cinder volumes.
+
+EMC
+---
+
+To use the cinder EMC driver, the following attributes must be set to
+appropriate values.  See
+https://wiki.openstack.org/wiki/Cinder/EMCVolumeDriver for more
+information.
+
+
+node["cinder"]["storage"]["provider"] = "emc"
+node["cinder"]["storage"]["emc"]["config"] = "/etc/cinder/cinder_emc_config.xml"
+node["cinder"]["storage"]["emc"]["StorageType"] = "Pool X"
+node["cinder"]["storage"]["emc"]["EcomServerIP"] = "IPAddressOfEcomServer"
+node["cinder"]["storage"]["emc"]["EcomServerPort"] = 5988
+node["cinder"]["storage"]["emc"]["EcomUserName"] = "admin"
+node["cinder"]["storage"]["emc"]["EcomPassword"] = "password"
+
 
 License and Author
 ==================

@@ -1,6 +1,7 @@
 [DEFAULT]
 
-<% if node["cinder"]["storage"]["provider"] == "netappiscsi" %>
+<% case node["cinder"]["storage"]["provider"] %>
+<% when "netappiscsi" %>
 volume_driver = cinder.volume.netapp.NetAppISCSIDriver
 netapp_wsdl_url = <%= @netapp_wsdl_url %>
 netapp_login = <%= @netapp_login %>
@@ -8,13 +9,16 @@ netapp_password = <%= @netapp_password %>
 netapp_server_hostname = <%= @netapp_server_hostname %>
 netapp_server_port = <%= @netapp_server_port %>
 netapp_storage_service = <%= @netapp_storage_service %>
-<% elsif node["cinder"]["storage"]["provider"] == "solidfire" %>
+<% when "solidfire" %>
 volume_driver = cinder.volume.solidfire.SolidFire
 san_ip = <%= @solidfire_mvip %>
 san_login = <%= @solidfire_username %>
 san_password = <%= @solidfire_password %>
+<% when "emc" %>
+iscsi_target_prefix = iqn.1992-04.com.emc
+volume_driver = cinder.volume.emc.EMCISCSIDriver
+cinder_emc_config_file = /etc/cinder/cinder_emc_config.xml
 <% end %>
-
 rootwrap_config = /etc/cinder/rootwrap.conf
 api_paste_confg = /etc/cinder/api-paste.ini
 iscsi_helper = tgtadm

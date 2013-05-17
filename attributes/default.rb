@@ -4,7 +4,7 @@ default["enable_monit"] = false  # OS provides packages                     # cl
 default["developer_mode"] = false  # we want secure passwords by default    # cluster_attribute
 ########################################################################
 
-# lvm/netappiscsi/netappnfs
+# lvm/netappiscsi/emc
 default["cinder"]["storage"]["provider"] = "lvm"
 
 # netapp settings - set these if you are using netappiscsi/netappnfs
@@ -33,6 +33,14 @@ default["cinder"]["services"]["api"]["path"] = "/v1/%(tenant_id)s"         # nod
 default["cinder"]["storage"]["solidfire"]["mvip"] = ""        # Solidfire MVIP address
 default["cinder"]["storage"]["solidfire"]["username"] = ""        # Solidfire cluster admin username
 default["cinder"]["storage"]["solidfire"]["password"] = ""        # Solidfire cluster admin password
+
+# EMC settings - set these if you are using EMC as the storage provider above.
+default["cinder"]["storage"]["emc"]["config"] = "/etc/cinder/cinder_emc_config.xml"
+default["cinder"]["storage"]["emc"]["StorageType"] = nil
+default["cinder"]["storage"]["emc"]["EcomServerIP"] = nil
+default["cinder"]["storage"]["emc"]["EcomServerPort"] = 5988
+default["cinder"]["storage"]["emc"]["EcomUserName"] = "admin"
+default["cinder"]["storage"]["emc"]["EcomPassword"] = nil
 
 # can use a separate 'cinder' network if so desired. Define this network in
 # your environment in the same way you define management/nova etc networks
@@ -63,6 +71,7 @@ when "rhel"
     "supporting_packages" => ["python-cinderclient", "MySQL-python", "python-keystone"],
     "package_overrides" => ""
   }
+  default["cinder"]["storage"]["emc"]["packages"] = ["pywbem"]
 when "debian"
   default["cinder"]["platform"] = {                                                   # node_attribute
     "cinder_api_packages" => ["cinder-common", "cinder-api"],
@@ -76,4 +85,5 @@ when "debian"
     "supporting_packages" => ["python-cinderclient", "python-mysqldb"],
     "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
   }
+  default["cinder"]["storage"]["emc"]["packages"] = ["python-pywbem"]
 end
