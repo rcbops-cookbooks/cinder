@@ -8,6 +8,11 @@ netapp_password = <%= @netapp_password %>
 netapp_server_hostname = <%= @netapp_server_hostname %>
 netapp_server_port = <%= @netapp_server_port %>
 netapp_storage_service = <%= @netapp_storage_service %>
+<% elsif node["cinder"]["storage"]["provider"] == "solidfire" %>
+volume_driver = cinder.volume.solidfire.SolidFire
+san_ip = <%= @solidfire_mvip %>
+san_login = <%= @solidfire_username %>
+san_password = <%= @solidfire_password %>
 <% end %>
 
 rootwrap_config = /etc/cinder/rootwrap.conf

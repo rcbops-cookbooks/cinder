@@ -28,6 +28,12 @@ default["cinder"]["services"]["api"]["network"] = "public"                 # nod
 default["cinder"]["services"]["api"]["port"] = 8776                        # node_attribute
 default["cinder"]["services"]["api"]["path"] = "/v1/%(tenant_id)s"         # node_attribute
 
+# solidfire settings - set these if you are using solidfire
+# as the storage provider above
+default["cinder"]["storage"]["solidfire"]["mvip"] = ""        # Solidfire MVIP address
+default["cinder"]["storage"]["solidfire"]["username"] = ""        # Solidfire cluster admin username
+default["cinder"]["storage"]["solidfire"]["password"] = ""        # Solidfire cluster admin password
+
 # can use a separate 'cinder' network if so desired. Define this network in
 # your environment in the same way you define management/nova etc networks
 default["cinder"]["services"]["volume"]["network"] = "management"                 # node_attribute
