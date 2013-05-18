@@ -49,3 +49,25 @@ template "/etc/tgt/targets.conf" do
   mode "600"
   notifies :restart, "service[iscsitarget]", :immediately
 end
+
+if node["cinder"]["storage"]["provider"] == "emc"
+  d = node["cinder"]["storage"]["emc"]
+  keys = %w[StorageType EcomServerIP EcomServerPort EcomUserName EcomPassword]
+  for word in keys
+    if not d.key? word
+      msg = "Cinder's emc volume provider was selected, but #{word} was not set.'"
+      Chef::Application.fatal! msg
+    end
+  end
+  node["cinder"]["storage"]["emc"]["packages"].each do |pkg|
+    package pkg do
+      action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+    end
+  end
+  template node["cinder"]["storage"]["emc"]["config"] do
+    source "cinder_emc_config.xml.erb"
+    variables d
+    mode "600"
+    notifies :restart, "service[iscsitarget]", :immediately
+  end
+end
