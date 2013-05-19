@@ -41,6 +41,7 @@ default["cinder"]["storage"]["emc"]["EcomServerIP"] = nil
 default["cinder"]["storage"]["emc"]["EcomServerPort"] = 5988
 default["cinder"]["storage"]["emc"]["EcomUserName"] = "admin"
 default["cinder"]["storage"]["emc"]["EcomPassword"] = nil
+default["cinder"]["storage"]["emc"]["MaskingView"] = nil # VMAX only
 
 # can use a separate 'cinder' network if so desired. Define this network in
 # your environment in the same way you define management/nova etc networks
