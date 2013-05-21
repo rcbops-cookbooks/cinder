@@ -67,7 +67,7 @@ if node["cinder"]["storage"]["provider"] == "emc"
   template node["cinder"]["storage"]["emc"]["config"] do
     source "cinder_emc_config.xml.erb"
     variables d
-    mode "600"
+    mode "644"
     notifies :restart, "service[iscsitarget]", :immediately
   end
 end

@@ -16,7 +16,7 @@ san_login = <%= @solidfire_username %>
 san_password = <%= @solidfire_password %>
 <% when "emc" %>
 iscsi_target_prefix = iqn.1992-04.com.emc
-volume_driver = cinder.volume.emc.EMCISCSIDriver
+volume_driver = cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver
 cinder_emc_config_file = /etc/cinder/cinder_emc_config.xml
 <% end %>
 rootwrap_config = /etc/cinder/rootwrap.conf
