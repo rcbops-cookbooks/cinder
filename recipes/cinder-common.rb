@@ -39,7 +39,9 @@ mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
 cinder_api = get_bind_endpoint("cinder", "api")
 
 cinder_volume_network = node["cinder"]["services"]["volume"]["network"]
-iscsi_ip_address = get_ip_for_net(cinder_volume_network)
+
+iscsi_ip_address = node["cinder"]["storage"]["iscsi"]["ip_address"]
+iscsi_ip_address ||= get_ip_for_net(cinder_volume_network)
 
 template "/etc/cinder/logging.conf" do
   source "cinder-logging.conf.erb"

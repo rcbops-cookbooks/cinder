@@ -66,7 +66,10 @@ cinder-volume
 Attributes
 ==========
 
-* `cinder["storage"]["provider"]` - storage provider (lvm/netappiscsi, defaults to lvm)
+* `cinder["storage"]["provider"]` - storage provider (lvm/netappiscsi,
+  defaults to lvm)
+* `cinder["storage"]["iscsi"]["ip_address"] - The ip address of the
+  iscsi provider.  By default, this will be an ip address on the host. 
 * `cinder["storage"]["netapp"]["wsdl_url"]` - NetApp device WSDL URL
 * `cinder["storage"]["netapp"]["login"]` - NetApp device login
 * `cinder["storage"]["netapp"]["password"]` - NetApp device password
@@ -124,7 +127,7 @@ appropriate values.  See
 https://wiki.openstack.org/wiki/Cinder/EMCVolumeDriver for more
 information.
 
-
+node["cinder"]["storage"]["iscsi"]["ip_address"] = "IPAddressOfStorageProcessor"
 node["cinder"]["storage"]["provider"] = "emc"
 node["cinder"]["storage"]["emc"]["config"] = "/etc/cinder/cinder_emc_config.xml"
 node["cinder"]["storage"]["emc"]["StorageType"] = "Pool X"
