@@ -1,0 +1,10 @@
+<EMC>
+<StorageType><%= @StorageType %></StorageType>
+<EcomServerIp><%= @EcomServerIP %></EcomServerIp>
+<EcomServerPort><%= @EcomServerPort %></EcomServerPort>
+<EcomUserName><%= @EcomUserName %></EcomUserName>
+<EcomPassword><%= @EcomPassword %></EcomPassword>
+<% if defined? @MaskingView and not @MaskingView.nil?%>
+<MaskingView><%= @MaskingView %></MaskingView>
+<% end %>
+</EMC>

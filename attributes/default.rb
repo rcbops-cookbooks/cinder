@@ -6,7 +6,7 @@ default["developer_mode"] = false  # we want secure passwords by default    # cl
 
 # lvm/netappiscsi/emc
 default["cinder"]["storage"]["provider"] = "lvm"
-
+default["cinder"]["storage"]["iscsi"]["ip_address"] = nil
 # netapp settings - set these if you are using netappiscsi/netappnfs
 # as the storage provider above
 default["cinder"]["storage"]["netapp"]["wsdl_url"] = ""
