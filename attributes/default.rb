@@ -47,11 +47,6 @@ default["cinder"]["storage"]["emc"]["MaskingView"] = nil # VMAX only
 # your environment in the same way you define management/nova etc networks
 default["cinder"]["services"]["volume"]["network"] = "management"                 # node_attribute
 
-# Logging stuff
-default["cinder"]["syslog"]["use"] = true                                    # node_attribute
-default["cinder"]["syslog"]["facility"] = "LOG_LOCAL4"                        # node_attribute
-default["cinder"]["syslog"]["config_facility"] = "local4"                     # node_attribute
-
 # LOGGING LEVEL
 # in order of verbosity (most to least)
 # DEBUG, INFO, WARNING, ERROR, CRITICAL
