@@ -30,24 +30,24 @@ action :create do
   case storage_provider
   when "solidfire"
 	  storage_options["volume_driver"] = "cinder.volume.solidfire.SolidFire"
-	  storage_options["san_ip"] = node["cinder"]["storage"]["provider"][storage_provider]["mvip"]
-	  storage_options["san_login"] = node["cinder"]["storage"]["provider"][storage_provider]["username"]
-	  storage_options["san_password"] = node["cinder"]["storage"]["provider"][storage_provider]["password"]
+	  storage_options["san_ip"] = node["cinder"]["storage"][storage_provider]["mvip"]
+	  storage_options["san_login"] = node["cinder"]["storage"][storage_provider]["username"]
+	  storage_options["san_password"] = node["cinder"]["storage"][storage_provider]["password"]
   when "netappiscsi"
 	  storage_options["volume_driver"] = "cinder.volume.netapp.NetAppISCSIDriver"
-	  storage_options["netapp_wsdl_url"] = node["cinder"]["storage"]["provider"]["netapp"]["iscsi"]["wsdl_url"]
-	  storage_options["netapp_login"] = node["cinder"]["storage"]["provider"]["netapp"]["iscsi"]["login"]
-	  storage_options["netapp_password"] = node["cinder"]["storage"]["provider"]["netapp"]["iscsi"]["password"]
-	  storage_options["netapp_server_hostname"] = node["cinder"]["storage"]["provider"]["netapp"]["iscsi"]["server_hostname"]
-	  storage_options["netapp_server_port"] = node["cinder"]["storage"]["provider"]["netapp"]["iscsi"]["server_port"]
-	  storage_options["netapp_storage_service"] = node["cinder"]["storage"]["provider"]["netapp"]["iscsi"]["storage_service"]
+	  storage_options["netapp_wsdl_url"] = node["cinder"]["storage"]["netapp"]["iscsi"]["wsdl_url"]
+	  storage_options["netapp_login"] = node["cinder"]["storage"]["netapp"]["iscsi"]["login"]
+	  storage_options["netapp_password"] = node["cinder"]["storage"]["netapp"]["iscsi"]["password"]
+	  storage_options["netapp_server_hostname"] = node["cinder"]["storage"]["netapp"]["iscsi"]["server_hostname"]
+	  storage_options["netapp_server_port"] = node["cinder"]["storage"]["netapp"]["iscsi"]["server_port"]
+	  storage_options["netapp_storage_service"] = node["cinder"]["storage"]["netapp"]["iscsi"]["storage_service"]
   when "netappnfsdirect"
 	  storage_options["volume_driver"] = "cinder.volume.drivers.netapp.nfs.NetAppDirect7modeNfsDriver"
-          storage_options["netapp_server_hostname"] = node["cinder"]["storage"]["provider"]["netapp"]["nfsdirect"]["server_hostname"]
-          storage_options["netapp_server_port"] = node["cinder"]["storage"]["provider"]["netapp"]["nfsdirect"]["port"]
-          storage_options["netapp_login"] = node["cinder"]["storage"]["provider"]["netapp"]["nfsdirect"]["login"]
-          storage_options["netapp_password"] = node["cinder"]["storage"]["provider"]["netapp"]["nfsdirect"]["password"]
-          storage_options["netapp_transport_type"] = node["cinder"]["storage"]["provider"]["netapp"]["nfsdirect"]["transport_type"]
+          storage_options["netapp_server_hostname"] = node["cinder"]["storage"]["netapp"]["nfsdirect"]["server_hostname"]
+          storage_options["netapp_server_port"] = node["cinder"]["storage"]["netapp"]["nfsdirect"]["port"]
+          storage_options["netapp_login"] = node["cinder"]["storage"]["netapp"]["nfsdirect"]["login"]
+          storage_options["netapp_password"] = node["cinder"]["storage"]["netapp"]["nfsdirect"]["password"]
+          storage_options["netapp_transport_type"] = node["cinder"]["storage"]["netapp"]["nfsdirect"]["transport_type"]
   when "emc"
 	  storage_options["iscsi_target_prefix"] = "iqn.1992-04.com.emc"
 	  storage_options["volume_driver"] = "cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver"
