@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+platform_options = node["cinder"]["platform"]
+
 platform_options["supporting_packages"].each do |pkg|
   package pkg do
     action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
