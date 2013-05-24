@@ -53,6 +53,7 @@ action :create do
 	  storage_options["volume_driver"] = "cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver"
 	  storage_options["cinder_emc_config_file"] = "/etc/cinder/cinder_emc_config.xml"
 
+  end
   t = template "/etc/cinder/cinder.conf" do
 	  source "cinder.conf.erb"
 	  owner "cinder"
