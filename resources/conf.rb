@@ -1,6 +1,5 @@
-#
 # Cookbook Name:: cinder
-# Recipe:: cinder-common
+# Resource:: cinder_conf
 #
 # Copyright 2012, Rackspace US, Inc.
 #
@@ -15,20 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-platform_options["supporting_packages"].each do |pkg|
-  package pkg do
-    action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
-    options platform_options["package_overrides"]
-  end
+actions :create
+
+def initialize(*args)
+	super
+	@action = :create
 end
 
-cinder_conf "/etc/cinder/cinder.conf" do
-	action :create
-end
-
-# now we are using mysql in the config file, ditch the original sqlite file
-file "/var/lib/cinder/cinder.sqlite" do
-      action :delete
-end
+attribute :options, :kind_of => Hash
