@@ -94,19 +94,14 @@ Attributes
 * `cinder["services"]["volume"]["network"]`  network name to place the service on
 * `cinder["services"]["volume"]["port"]` cinder api port
 * `cinder["services"]["volume"]["path"]` uri to use when using the cinder api
-* `cinder["syslog"]["use"]`
-* `cinder["syslog"]["facility"]`
-* `cinder["syslog"]["config_facility"]`
 * `cinder["config"]["log_verbosity"]` - Logging verbosity.  Valid options are DEBUG, INFO, WARNING, ERROR, CRITICAL.  Default is INFO
 * `cinder["platform"]` = hash of platform specific package/service names and options
 
 Templates
 =====
 
-* `24-cinder.conf.erb` - rsyslog config file for cinder
 * `api-paste.ini.erb` - Paste config for cinder API middleware
 * `cinder.conf.erb` - Basic cinder.conf file
-* `cinder-logging.conf.erb` - Logging config for cinder services
 * `targets.conf.erb` - Config file for tgt (iscsi target software)
 
 Usage
