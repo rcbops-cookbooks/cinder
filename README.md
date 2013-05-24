@@ -127,6 +127,7 @@ appropriate values.  See
 https://wiki.openstack.org/wiki/Cinder/EMCVolumeDriver for more
 information.
 
+~~~~~~~~~~~~
 node["cinder"]["storage"]["iscsi"]["ip_address"] = "IPAddressOfStorageProcessor"
 node["cinder"]["storage"]["provider"] = "emc"
 node["cinder"]["storage"]["emc"]["config"] = "/etc/cinder/cinder_emc_config.xml"
@@ -135,7 +136,20 @@ node["cinder"]["storage"]["emc"]["EcomServerIP"] = "IPAddressOfEcomServer"
 node["cinder"]["storage"]["emc"]["EcomServerPort"] = 5988
 node["cinder"]["storage"]["emc"]["EcomUserName"] = "admin"
 node["cinder"]["storage"]["emc"]["EcomPassword"] = "password"
+~~~~~~~~~~~~~
 
+SolidFire
+---------
+
+To use the solidfire driver, the following attributes must be set to
+appropriate values.
+
+~~~~~~~~~~~~~
+node["cinder"]["storage"]["provider"] = "solidfire"
+node["cinder"]["storage"]["solidfire"]["mvip"] = "Service VIP of SolidFire Device"
+node["cinder"]["storage"]["solidfire"]["username"] = "User"
+node["cinder"]["storage"]["solidfire"]["password"] = "Password"
+~~~~~~~~~~~~~
 
 License and Author
 ==================
