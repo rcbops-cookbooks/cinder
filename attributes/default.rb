@@ -4,17 +4,9 @@ default["enable_monit"] = false  # OS provides packages                     # cl
 default["developer_mode"] = false  # we want secure passwords by default    # cluster_attribute
 ########################################################################
 
-# lvm/netappiscsi/emc
+# lvm/netappiscsi/emc/solidfire/netappnfsdirect
 default["cinder"]["storage"]["provider"] = "lvm"
 default["cinder"]["storage"]["iscsi"]["ip_address"] = nil
-# netapp settings - set these if you are using netappiscsi/netappnfs
-# as the storage provider above
-default["cinder"]["storage"]["netapp"]["wsdl_url"] = ""
-default["cinder"]["storage"]["netapp"]["login"] = "root"
-default["cinder"]["storage"]["netapp"]["password"] = ""
-default["cinder"]["storage"]["netapp"]["server_hostname"] = ""
-default["cinder"]["storage"]["netapp"]["server_port"] = "8088"
-default["cinder"]["storage"]["netapp"]["storage_service"] = ""
 
 default["cinder"]["db"]["name"] = "cinder"                                      # node_attribute
 default["cinder"]["db"]["username"] = "cinder"                                  # node_attribute
@@ -42,6 +34,23 @@ default["cinder"]["storage"]["emc"]["EcomServerPort"] = 5988
 default["cinder"]["storage"]["emc"]["EcomUserName"] = "admin"
 default["cinder"]["storage"]["emc"]["EcomPassword"] = nil
 default["cinder"]["storage"]["emc"]["MaskingView"] = nil # VMAX only
+
+# netapp settings - set these if you are using netappiscsi/netappnfs
+# as the storage provider above
+default["cinder"]["storage"]["netapp"]["iscsi"]["wsdl_url"] = ""
+default["cinder"]["storage"]["netapp"]["iscsi"]["login"] = "root"
+default["cinder"]["storage"]["netapp"]["iscsi"]["password"] = ""
+default["cinder"]["storage"]["netapp"]["iscsi"]["server_hostname"] = ""
+default["cinder"]["storage"]["netapp"]["iscsi"]["server_port"] = "8088"
+default["cinder"]["storage"]["netapp"]["iscsi"]["storage_service"] = ""
+
+# NetApp NFS Direct Settings - set these if you are using the Netapp NFS direct driver:
+# http://docs.openstack.org/grizzly/openstack-block-storage/admin/content/netapp-nfs-driver-direct-7mode.html
+default["cinder"]["storage"]["netapp"]["nfsdirect"]["server_hostname"] = ""
+default["cinder"]["storage"]["netapp"]["nfsdirect"]["port"] = "443"
+default["cinder"]["storage"]["netapp"]["nfsdirect"]["login"] = ""
+default["cinder"]["storage"]["netapp"]["nfsdirect"]["password"] = ""
+default["cinder"]["storage"]["netapp"]["nfsdirect"]["transport_type"] = "https"
 
 # can use a separate 'cinder' network if so desired. Define this network in
 # your environment in the same way you define management/nova etc networks
