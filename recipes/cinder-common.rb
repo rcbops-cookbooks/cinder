@@ -43,17 +43,6 @@ cinder_volume_network = node["cinder"]["services"]["volume"]["network"]
 iscsi_ip_address = node["cinder"]["storage"]["iscsi"]["ip_address"]
 iscsi_ip_address ||= get_ip_for_net(cinder_volume_network)
 
-template "/etc/cinder/logging.conf" do
-  source "cinder-logging.conf.erb"
-  owner "cinder"
-  group "cinder"
-  mode "0600"
-  variables("use_syslog" => node["cinder"]["syslog"]["use"],
-            "log_facility" => node["cinder"]["syslog"]["facility"],
-            "log_verbosity" => node["cinder"]["config"]["log_verbosity"]
-           )
-end
-
 template "/etc/cinder/cinder.conf" do
   source "cinder.conf.erb"
   owner "cinder"
@@ -80,19 +69,6 @@ template "/etc/cinder/cinder.conf" do
     "storage_availability_zone" => node["cinder"]["config"]["storage_availability_zone"],
     "iscsi_ip_address" => iscsi_ip_address
   )
-end
-
-template "/etc/rsyslog.d/24-cinder.conf" do
-    source "24-cinder.conf.erb"
-    owner "root"
-    group "root"
-    mode "0644"
-    variables(
-        "use_syslog" => node["cinder"]["syslog"]["use"],
-        "log_facility" => node["cinder"]["syslog"]["config_facility"]
-    )
-    only_if { node["cinder"]["syslog"]["use"] }
-    notifies :restart, "service[rsyslog]", :delayed
 end
 
 # now we are using mysql in the config file, ditch the original sqlite file
