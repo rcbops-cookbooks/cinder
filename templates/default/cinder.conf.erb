@@ -1,24 +1,4 @@
 [DEFAULT]
-
-<% case node["cinder"]["storage"]["provider"] %>
-<% when "netappiscsi" %>
-volume_driver = cinder.volume.netapp.NetAppISCSIDriver
-netapp_wsdl_url = <%= @netapp_wsdl_url %>
-netapp_login = <%= @netapp_login %>
-netapp_password = <%= @netapp_password %>
-netapp_server_hostname = <%= @netapp_server_hostname %>
-netapp_server_port = <%= @netapp_server_port %>
-netapp_storage_service = <%= @netapp_storage_service %>
-<% when "solidfire" %>
-volume_driver = cinder.volume.solidfire.SolidFire
-san_ip = <%= @solidfire_mvip %>
-san_login = <%= @solidfire_username %>
-san_password = <%= @solidfire_password %>
-<% when "emc" %>
-iscsi_target_prefix = iqn.1992-04.com.emc
-volume_driver = cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver
-cinder_emc_config_file = /etc/cinder/cinder_emc_config.xml
-<% end %>
 rootwrap_config = /etc/cinder/rootwrap.conf
 api_paste_confg = /etc/cinder/api-paste.ini
 iscsi_helper = tgtadm
@@ -34,6 +14,9 @@ osapi_volume_listen = <%= @cinder_api_listen_ip %>
 osapi_volume_listen_port = <%= @cinder_api_listen_port %>
 iscsi_ip_address = <%= @iscsi_ip_address %>
 storage_availability_zone = <%= @storage_availability_zone %>
+
+#### STORAGE PROVIDER INFORMATION ####
+<%= render "partials/storage-options.partial.erb" %>
 
 [keystone_authtoken]
 signing_dirname = /tmp/keystone-signing-cinder
