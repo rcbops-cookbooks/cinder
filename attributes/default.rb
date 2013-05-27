@@ -20,6 +20,11 @@ default["cinder"]["services"]["api"]["network"] = "public"                 # nod
 default["cinder"]["services"]["api"]["port"] = 8776                        # node_attribute
 default["cinder"]["services"]["api"]["path"] = "/v1/%(tenant_id)s"         # node_attribute
 
+# LVM Settings
+default["cinder"]["storage"]["lvm"]["volume_group"] = "cinder-volumes"     # name from volume group
+default["cinder"]["storage"]["lvm"]["volume_clear"] = "zero"               # none, zero, shred
+default["cinder"]["storage"]["lvm"]["pool_size"] = "None"                  # Size of thin provisioning pool
+
 # solidfire settings - set these if you are using solidfire
 # as the storage provider above
 default["cinder"]["storage"]["solidfire"]["mvip"] = ""        # Solidfire MVIP address
