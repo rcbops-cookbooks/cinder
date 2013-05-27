@@ -59,7 +59,7 @@ action :create do
           storage_options["volume_pool_size"] = node["cinder"]["storage"]["lvm"]["pool_size"]
   else
           msg = "#{storage_provider}, is not currently supported by these cookbooks. Please change the storage provider attribute in your environment to one of lvm, emc, solidfire, netappiscsi, netappnfsdirect."
-	  Chef::Application.fatal! msg
+          Chef::Application.fatal! msg
   end
   t = template "/etc/cinder/cinder.conf" do
 	  source "cinder.conf.erb"
