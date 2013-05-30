@@ -48,6 +48,7 @@ action :create do
           storage_options["netapp_login"] = node["cinder"]["storage"]["netapp"]["nfsdirect"]["login"]
           storage_options["netapp_password"] = node["cinder"]["storage"]["netapp"]["nfsdirect"]["password"]
           storage_options["netapp_transport_type"] = node["cinder"]["storage"]["netapp"]["nfsdirect"]["transport_type"]
+          storage_options["nfs_shares_config"] = node["cinder"]["storage"]["netapp"]["nfsdirect"]["nfs_shares_config"]
   when "emc"
 	  storage_options["iscsi_target_prefix"] = "iqn.1992-04.com.emc"
 	  storage_options["volume_driver"] = "cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver"

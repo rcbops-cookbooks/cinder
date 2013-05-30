@@ -56,6 +56,8 @@ default["cinder"]["storage"]["netapp"]["nfsdirect"]["port"] = "443"
 default["cinder"]["storage"]["netapp"]["nfsdirect"]["login"] = ""
 default["cinder"]["storage"]["netapp"]["nfsdirect"]["password"] = ""
 default["cinder"]["storage"]["netapp"]["nfsdirect"]["transport_type"] = "https"
+default["cinder"]["storage"]["netapp"]["nfsdirect"]["nfs_shares_config"] = "/etc/cinder/shares.txt"
+default["cinder"]["storage"]["netapp"]["nfsdirect"]["export"] = ""
 
 # can use a separate 'cinder' network if so desired. Define this network in
 # your environment in the same way you define management/nova etc networks
@@ -82,6 +84,7 @@ when "rhel"
     "package_overrides" => ""
   }
   default["cinder"]["storage"]["emc"]["packages"] = ["pywbem"]
+  default["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"] = ["nfs-utils", "sysfsutils"]
 when "debian"
   default["cinder"]["platform"] = {                                                   # node_attribute
     "cinder_api_packages" => ["cinder-common", "cinder-api"],
@@ -96,4 +99,5 @@ when "debian"
     "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
   }
   default["cinder"]["storage"]["emc"]["packages"] = ["python-pywbem"]
+  default["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"] = ["nfs-common", "sysfsutils"]
 end
