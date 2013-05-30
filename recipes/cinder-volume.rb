@@ -50,25 +50,44 @@ template "/etc/tgt/targets.conf" do
   notifies :restart, "service[iscsitarget]", :immediately
 end
 
-if node["cinder"]["storage"]["provider"] == "emc"
-  d = node["cinder"]["storage"]["emc"]
-  keys = %w[StorageType EcomServerIP EcomServerPort EcomUserName EcomPassword]
-  for word in keys
-    if not d.key? word
-      msg = "Cinder's emc volume provider was selected, but #{word} was not set.'"
-      Chef::Application.fatal! msg
+case node["cinder"]["storage"]["provider"] 
+  when "emc"
+    d = node["cinder"]["storage"]["emc"]
+    keys = %w[StorageType EcomServerIP EcomServerPort EcomUserName EcomPassword]
+    for word in keys
+      if not d.key? word
+        msg = "Cinder's emc volume provider was selected, but #{word} was not set.'"
+        Chef::Application.fatal! msg
+      end
     end
-  end
-  node["cinder"]["storage"]["emc"]["packages"].each do |pkg|
-    package pkg do
-      action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+    node["cinder"]["storage"]["emc"]["packages"].each do |pkg|
+      package pkg do
+        action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+      end
     end
-  end
 
-  template node["cinder"]["storage"]["emc"]["config"] do
-    source "cinder_emc_config.xml.erb"
-    variables d
-    mode "644"
-    notifies :restart, "service[iscsitarget]", :immediately
-  end
+    template node["cinder"]["storage"]["emc"]["config"] do
+      source "cinder_emc_config.xml.erb"
+      variables d
+      mode "644"
+      notifies :restart, "service[iscsitarget]", :immediately
+    end
+  when "netappnfsdirect"
+    node["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"].each do |pkg|
+      package pkg do
+        action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+      end
+    end
+
+    template node["cinder"]["storage"]["netapp"]["nfsdirect"]["nfs_shares_config"] do
+      source "cinder_netapp_nfs_shares.txt.erb"
+      mode "0600"
+      owner "cinder"
+      group "cinder"
+      variables(
+	     "host" => node["cinder"]["storage"]["netapp"]["nfsdirect"]["server_hostname"],
+	     "nfs_export" => node["cinder"]["storage"]["netapp"]["nfsdirect"]["export"]
+      )
+      notifies :restart, "service[cinder-volume]", :delayed
+    end
 end
