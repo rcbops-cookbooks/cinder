@@ -77,6 +77,7 @@ action :create do
                      "cinder_api_listen_ip" => cinder_api["host"],
                      "cinder_api_listen_port" => cinder_api["port"],
                      "storage_availability_zone" => node["cinder"]["config"]["storage_availability_zone"],
+                     "max_gigabytes" => node["cinder"]["config"]["max_gigabytes"],
 		     "storage_options" => storage_options,
                      "iscsi_ip_address" => iscsi_ip_address
           )
