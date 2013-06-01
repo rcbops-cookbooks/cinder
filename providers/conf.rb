@@ -29,12 +29,12 @@ action :create do
   storage_options = {}
   case storage_provider
   when "solidfire"
-	  storage_options["volume_driver"] = "cinder.volume.solidfire.SolidFire"
+	  storage_options["volume_driver"] = "cinder.volume.drivers.solidfire.SolidFire"
 	  storage_options["san_ip"] = node["cinder"]["storage"][storage_provider]["mvip"]
 	  storage_options["san_login"] = node["cinder"]["storage"][storage_provider]["username"]
 	  storage_options["san_password"] = node["cinder"]["storage"][storage_provider]["password"]
   when "netappiscsi"
-	  storage_options["volume_driver"] = "cinder.volume.netapp.NetAppISCSIDriver"
+	  storage_options["volume_driver"] = "cinder.volume.drivers.netapp.NetAppISCSIDriver"
 	  storage_options["netapp_wsdl_url"] = node["cinder"]["storage"]["netapp"]["iscsi"]["wsdl_url"]
 	  storage_options["netapp_login"] = node["cinder"]["storage"]["netapp"]["iscsi"]["login"]
 	  storage_options["netapp_password"] = node["cinder"]["storage"]["netapp"]["iscsi"]["password"]
