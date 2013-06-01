@@ -68,6 +68,7 @@ default["cinder"]["services"]["volume"]["network"] = "management"               
 # DEBUG, INFO, WARNING, ERROR, CRITICAL
 default["cinder"]["config"]["log_verbosity"] = "INFO"                       # node_attributes
 default["cinder"]["config"]["storage_availability_zone"] = "nova"                       # node_attributes
+default["cinder"]["config"]["max_gigabytes"] = "10000"                      # node_attributes
 
 case platform_family
 when "rhel"
