@@ -68,14 +68,8 @@ Attributes
 
 * `cinder["storage"]["provider"]` - storage provider (lvm/netappiscsi,
   defaults to lvm)
-* `cinder["storage"]["iscsi"]["ip_address"] - The ip address of the
+* `cinder["storage"]["iscsi"]["ip_address"]` - The ip address of the
   iscsi provider.  By default, this will be an ip address on the host. 
-* `cinder["storage"]["netapp"]["wsdl_url"]` - NetApp device WSDL URL
-* `cinder["storage"]["netapp"]["login"]` - NetApp device login
-* `cinder["storage"]["netapp"]["password"]` - NetApp device password
-* `cinder["storage"]["netapp"]["server_hostname"]` - NetApp device hostname
-* `cinder["storage"]["netapp"]["server_port"]` - NetApp device port
-* `cinder["storage"]["netapp"]["storage_service"]` - NetApp storage service
 * `cinder["storage"]["solidfire"]["mvip"]` - Solidfire Storage Service VIP
 * `cinder["storage"]["solidfire"]["username"]` - Solidfire Storage Service Admin Username
 * `cinder["storage"]["solidfire"]["password"]` - Solidfire Storage Service Admin Password
@@ -85,6 +79,19 @@ Attributes
 * `cinder["storage"]["emc"]["EcomServerPort"]` - EMC ECOM Port
 * `cinder["storage"]["emc"]["EcomUserName"]` - EMC ECOM User
 * `cinder["storage"]["emc"]["EcomPassword"]` - EMC ECOM Password
+* `cinder["storage"]["netapp"]["iscsi"]["wsdl_url"]` - NetApp device WSDL URL
+* `cinder["storage"]["netapp"]["iscsi"]["login"]` - NetApp device login
+* `cinder["storage"]["netapp"]["iscsi"]["password"]` - NetApp device password
+* `cinder["storage"]["netapp"]["iscsi"]["server_hostname"]` - NetApp device hostname
+* `cinder["storage"]["netapp"]["iscsi"]["server_port"]` - NetApp device port
+* `cinder["storage"]["netapp"]["iscsi"]["storage_service"]` - NetApp storage service
+* `cinder["storage"]["netapp"]["nfsdirect"]["server_hostname"]` - NetApp NFS server hostname
+* `cinder["storage"]["netapp"]["nfsdirect"]["port"]` - NetApp NFS port
+* `cinder["storage"]["netapp"]["nfsdirect"]["login"]` - NetApp device login
+* `cinder["storage"]["netapp"]["nfsdirect"]["password"]` - NetApp device password
+* `cinder["storage"]["netapp"]["nfsdirect"]["transport_type"]` - NetApp transport type (http/s)
+* `cinder["storage"]["netapp"]["nfsdirect"]["nfs_shares_config"]` - Configuration file location with a list of volumes exported by NetApp
+* `cinder["storage"]["netapp"]["nfsdirect"]["export"]` - NetApp exported volume to use
 * `cinder["db"]["name"]` - name of database to create for cinder
 * `cinder["db"]["username"]` - cinder username for database
 * `cinder["service_tenant_name"]` - name of tenant to use for the cinder service account in keystone
@@ -145,6 +152,40 @@ node["cinder"]["storage"]["solidfire"]["mvip"] = "Service VIP of SolidFire Devic
 node["cinder"]["storage"]["solidfire"]["username"] = "User"
 node["cinder"]["storage"]["solidfire"]["password"] = "Password"
 ~~~~~~~~~~~~~
+
+NetApp - ISCSI
+--------------
+
+To use the netapp iscsi driver, the following attributes must be set to 
+appropriate values.
+
+~~~~~~~~~~~~~
+node["cinder"]["storage"]["provider"] = "netappiscsi"
+node["cinder"]["storage"]["netapp"]["iscsi"]["wsdl_url"] = "ISCSI URL from NetApp"
+node["cinder"]["storage"]["netapp"]["iscsi"]["login"] = "User"
+node["cinder"]["storage"]["netapp"]["iscsi"]["password"] = "Password"
+node["cinder"]["storage"]["netapp"]["iscsi"]["server_hostname"] = "NetApp Hostname"
+node["cinder"]["storage"]["netapp"]["iscsi"]["server_port"] = "Port to connect ISCSI on NetApp"
+node["cinder"]["storage"]["netapp"]["iscsi"]["storage_service"] = ""
+~~~~~~~~~~~~~
+
+NetApp - NFS
+------------
+
+To use the NetApp nfs driver, the following attributes must be set to
+appropriate values.
+
+~~~~~~~~~~~~
+node["cinder"]["storage"]["provider"] = "netappnfsdirect"
+node["cinder"]["storage"]["netapp"]["nfsdirect"]["server_hostname"] = "NetApp Hostname or IP"
+node["cinder"]["storage"]["netapp"]["nfsdirect"]["port"] = "Port to connect to NetApp (80/443)"
+node["cinder"]["storage"]["netapp"]["nfsdirect"]["login"] = "User"
+node["cinder"]["storage"]["netapp"]["nfsdirect"]["password"] = "Password"
+node["cinder"]["storage"]["netapp"]["nfsdirect"]["transport_type"] = "http/https"
+node["cinder"]["storage"]["netapp"]["nfsdirect"]["nfs_shares_config"] = "/etc/cinder/shares.txt"
+node["cinder"]["storage"]["netapp"]["nfsdirect"]["export"] = "NetApp Exported Volume to use"
+~~~~~~~~~~~~
+
 
 License and Author
 ==================
