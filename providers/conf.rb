@@ -82,7 +82,7 @@ action :create do
                      "max_gigabytes" => node["cinder"]["config"]["max_gigabytes"],
 		     "storage_options" => storage_options,
                      "iscsi_ip_address" => iscsi_ip_address,
-                     "glance_host" => glance_api["host"],
+                     "glance_host" => glance_api["host"]
           )
   end
   new_resource.updated_by_last_action(t.updated_by_last_action?)
