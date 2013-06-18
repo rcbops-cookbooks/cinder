@@ -7,6 +7,7 @@ default["developer_mode"] = false  # we want secure passwords by default    # cl
 # lvm/netappiscsi/emc/solidfire/netappnfsdirect
 default["cinder"]["storage"]["provider"] = "lvm"
 default["cinder"]["storage"]["iscsi"]["ip_address"] = nil
+default["cinder"]["storage"]["enable_multipath"] = false                    # if using emc set to true to enable multi-path
 
 default["cinder"]["db"]["name"] = "cinder"                                      # node_attribute
 default["cinder"]["db"]["username"] = "cinder"                                  # node_attribute
