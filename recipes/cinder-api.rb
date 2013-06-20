@@ -66,7 +66,9 @@ template "/etc/cinder/api-paste.ini" do
     "service_pass" => cinder_info["service_pass"],
     "keystone_api_ipaddress" => ks_service_endpoint["host"],
     "service_port" => ks_service_endpoint["port"],
+    "service_protocol" => ks_service_endpoint["scheme"],
     "admin_port" => ks_admin_endpoint["port"],
+    "admin_protocol" => ks_admin_endpoint["scheme"],
     "admin_token" => keystone["admin_token"]
   )
   notifies :restart, "service[cinder-api]", :delayed

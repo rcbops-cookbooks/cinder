@@ -56,12 +56,12 @@ paste.filter_factory = cinder.api.middleware.auth:CinderKeystoneContext.factory
 [filter:authtoken]
 paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
 paste.filter_factory = keystone.middleware.auth_token:filter_factory
-service_protocol = http
+service_protocol = <%= @service_protocol %>
 service_host = <%= @keystone_api_ipaddress %>
 service_port = <%= @service_port %>
 auth_host = <%= @keystone_api_ipaddress %>
 auth_port = <%= @admin_port %>
-auth_protocol = http
+auth_protocol = <%= @admin_protocol %>
 admin_tenant_name = <%= @service_tenant_name %>
 admin_user = <%= @service_user %>
 admin_password = <%= @service_pass %>
