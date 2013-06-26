@@ -75,7 +75,7 @@ when "rhel"
   default["cinder"]["platform"] = {                                                   # node_attribute
     "cinder_api_packages" => ["openstack-cinder"],
     "cinder_api_service" => "openstack-cinder-api",
-    "cinder_volume_packages" => ["openstack-cinder"],
+    "cinder_volume_packages" => ["openstack-cinder", "iscsi-initiator-utils", "qemu-img"],
     "cinder_volume_service" => "openstack-cinder-volume",
     "cinder_scheduler_packages" => ["openstack-cinder"],
     "cinder_scheduler_service" => "openstack-cinder-scheduler",
@@ -90,7 +90,7 @@ when "debian"
   default["cinder"]["platform"] = {                                                   # node_attribute
     "cinder_api_packages" => ["cinder-common", "cinder-api"],
     "cinder_api_service" => "cinder-api",
-    "cinder_volume_packages" => ["cinder-volume"],
+    "cinder_volume_packages" => ["cinder-volume", "open-iscsi", "qemu-utils"],
     "cinder_volume_service" => "cinder-volume",
     "cinder_scheduler_packages" => ["cinder-scheduler"],
     "cinder_scheduler_service" => "cinder-scheduler",
