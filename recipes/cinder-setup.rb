@@ -20,7 +20,7 @@
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
 
 # Allow for using a well known db password
-if node["developer_mode"]
+if node["developer_mode"] == true
   node.set_unless["cinder"]["db"]["password"] = "cinder"
 else
   node.set_unless["cinder"]["db"]["password"] = secure_password
