@@ -66,10 +66,8 @@ cinder-volume
 Attributes
 ==========
 
-* `cinder["storage"]["provider"]` - storage provider (lvm/netappiscsi,
-  defaults to lvm)
-* `cinder["storage"]["iscsi"]["ip_address"]` - The ip address of the
-  iscsi provider.  By default, this will be an ip address on the host. 
+* `cinder["storage"]["provider"]` - storage provider (lvm/netappiscsi, defaults to lvm)
+* `cinder["storage"]["iscsi"]["ip_address"]` - The ip address of the iscsi provider.  By default, this will be an ip address on the host. 
 * `cinder["storage"]["solidfire"]["mvip"]` - Solidfire Storage Service VIP
 * `cinder["storage"]["solidfire"]["username"]` - Solidfire Storage Service Admin Username
 * `cinder["storage"]["solidfire"]["password"]` - Solidfire Storage Service Admin Password
