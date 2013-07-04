@@ -19,6 +19,9 @@ default["cinder"]["services"]["api"]["scheme"] = "http"                    # nod
 default["cinder"]["services"]["api"]["network"] = "public"                 # node_attribute
 default["cinder"]["services"]["api"]["port"] = 8776                        # node_attribute
 default["cinder"]["services"]["api"]["path"] = "/v1/%(tenant_id)s"         # node_attribute
+default["cinder"]["services"]["api"]["cert_file"] = "cinder.pem"
+default["cinder"]["services"]["api"]["key_file"] = "cinder.key"
+default["cinder"]["services"]["api"]["wsgi_file"] = "cinder-api"
 
 # LVM Settings
 default["cinder"]["storage"]["lvm"]["volume_group"] = "cinder-volumes"     # name from volume group
@@ -86,6 +89,7 @@ when "rhel"
   }
   default["cinder"]["storage"]["emc"]["packages"] = ["pywbem"]
   default["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"] = ["nfs-utils", "sysfsutils"]
+  default["cinder"]["ssl"]["dir"] = "/etc/pki/tls"
 when "debian"
   default["cinder"]["platform"] = {                                                   # node_attribute
     "cinder_api_packages" => ["cinder-common", "cinder-api"],
@@ -101,4 +105,5 @@ when "debian"
   }
   default["cinder"]["storage"]["emc"]["packages"] = ["python-pywbem"]
   default["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"] = ["nfs-common", "sysfsutils"]
+  default["cinder"]["ssl"]["dir"] = "/etc/ssl"
 end
