@@ -30,11 +30,19 @@ keystone_admin_password = keystone["users"][keystone_admin_user]["password"]
 keystone_admin_tenant = keystone["users"][keystone_admin_user]["default_tenant"]
 
 if cinder_info = get_settings_by_role("cinder-setup", "cinder")
-    Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup role holder")
+  Chef::Log.info("cinder::cinder-api got cinder_info from cinder-setup role holder")
 elsif cinder_info = get_settings_by_role("nova-volume", "cinder")
-    Chef::Log.info("cinder::cinder-volume got cinder_info from nova-volume role holder")
+  Chef::Log.info("cinder::cinder-api got cinder_info from nova-volume role holder")
 elsif cinder_info = get_settings_by_recipe("cinder::cinder-setup", "cinder")
-    Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup recipe holder")
+  Chef::Log.info("cinder::cinder-api got cinder_info from cinder-setup recipe holder")
+end
+
+if volume_endpoint = get_access_endpoint("cinder-all", "cinder", "api")
+  Chef::Log.debug("cinder::cinder-api got cinder endpoint info from cinder-all role holder using get_access_endpoint")
+elsif volume_endpoint = get_bind_endpoint("cinder", "api")
+  Chef::Log.debug("cinder::cinder-api got cinder endpoint info from cinder-api role holder using get_bind_endpoint")
+elsif volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
+  Chef::Log.debug("cinder::cinder-api got cinder endpoint info from nova-volume role holder using get_access_endpoint")
 end
 
 # install packages for cinder-api
@@ -51,8 +59,23 @@ include_recipe "cinder::cinder-common"
 service "cinder-api" do
   service_name platform_options["cinder_api_service"]
   supports :status => true, :restart => true
-  action :enable
-  subscribes :restart, "template[/etc/cinder/cinder.conf]", :delayed
+  unless volume_endpoint["scheme"] == "https"
+    action :enable
+    subscribes :restart, "template[/etc/cinder/cinder.conf]", :delayed
+  else
+    action [ :disable, :stop ]
+  end
+end
+
+# Setup SSL
+if volume_endpoint["scheme"] == "https"
+  include_recipe "cinder::cinder-api-ssl"
+else
+  apache_site "openstack-cinder-api" do
+    enable false
+    notifies :run, "execute[restore-selinux-context]", :immediately
+    notifies :restart, "service[apache2]", :immediately
+  end
 end
 
 template "/etc/cinder/api-paste.ini" do
@@ -71,5 +94,9 @@ template "/etc/cinder/api-paste.ini" do
     "admin_protocol" => ks_admin_endpoint["scheme"],
     "admin_token" => keystone["admin_token"]
   )
-  notifies :restart, "service[cinder-api]", :delayed
+  unless volume_endpoint["scheme"] == "https"
+    notifies :restart, "service[cinder-api]", :delayed
+  else
+    notifies :restart, "service[apache2]", :immediately
+  end
 end

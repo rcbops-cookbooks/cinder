@@ -38,11 +38,11 @@ ks_admin_endpoint = get_access_endpoint("keystone-api", "keystone", "admin-api")
 keystone = get_settings_by_role("keystone-setup", "keystone")
 
 if volume_endpoint = get_access_endpoint("cinder-all", "cinder", "api")
-    Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-all role holder using get_access_endpoint")
+  Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-all role holder using get_access_endpoint")
 elsif volume_endpoint = get_bind_endpoint("cinder", "api")
-    Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-api role holder using get_bind_endpoint")
+  Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-api role holder using get_bind_endpoint")
 elsif volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
-    Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from nova-volume role holder using get_access_endpoint")
+  Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from nova-volume role holder using get_access_endpoint")
 end
 
 Chef::Log.debug("volume_endpoint contains: #{volume_endpoint}")
