@@ -27,10 +27,10 @@ platform_options["supporting_packages"].each do |pkg|
 end
 
 cinder_conf "/etc/cinder/cinder.conf" do
-	action :create
+  action :create
 end
 
 # now we are using mysql in the config file, ditch the original sqlite file
 file "/var/lib/cinder/cinder.sqlite" do
-      action :delete
+  action :delete
 end
