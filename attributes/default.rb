@@ -8,20 +8,31 @@ default["cinder"]["storage"]["provider"] = "lvm"
 default["cinder"]["storage"]["iscsi"]["ip_address"] = nil
 default["cinder"]["storage"]["enable_multipath"] = false                    # if using emc set to true to enable multi-path
 
-default["cinder"]["db"]["name"] = "cinder"                                      # node_attribute
-default["cinder"]["db"]["username"] = "cinder"                                  # node_attribute
+default["cinder"]["db"]["name"] = "cinder"
+default["cinder"]["db"]["username"] = "cinder"
 
-default["cinder"]["service_tenant_name"] = "service"                          # node_attribute
-default["cinder"]["service_user"] = "cinder"                                    # node_attribute
-default["cinder"]["service_role"] = "admin"                                   # node_attribute
+default["cinder"]["service_tenant_name"] = "service"
+default["cinder"]["service_user"] = "cinder"
+default["cinder"]["service_role"] = "admin"
 
-default["cinder"]["services"]["api"]["scheme"] = "http"                    # node_attribute
-default["cinder"]["services"]["api"]["network"] = "public"                 # node_attribute
-default["cinder"]["services"]["api"]["port"] = 8776                        # node_attribute
-default["cinder"]["services"]["api"]["path"] = "/v1/%(tenant_id)s"         # node_attribute
+default["cinder"]["services"]["api"]["scheme"] = "http"
+default["cinder"]["services"]["api"]["network"] = "public"
+default["cinder"]["services"]["api"]["port"] = 8776
+default["cinder"]["services"]["api"]["path"] = "/v1/%(tenant_id)s"
+
 default["cinder"]["services"]["api"]["cert_file"] = "cinder.pem"
 default["cinder"]["services"]["api"]["key_file"] = "cinder.key"
 default["cinder"]["services"]["api"]["wsgi_file"] = "cinder-api"
+
+default["cinder"]["services"]["internal-api"]["scheme"] = "http"
+default["cinder"]["services"]["internal-api"]["network"] = "management"
+default["cinder"]["services"]["internal-api"]["port"] = 8776
+default["cinder"]["services"]["internal-api"]["path"] = "/v1/%(tenant_id)s"
+
+default["cinder"]["services"]["admin-api"]["scheme"] = "http"
+default["cinder"]["services"]["admin-api"]["network"] = "management"
+default["cinder"]["services"]["admin-api"]["port"] = 8776
+default["cinder"]["services"]["admin-api"]["path"] = "/v1/%(tenant_id)s"
 
 # LVM Settings
 default["cinder"]["storage"]["lvm"]["volume_group"] = "cinder-volumes"     # name from volume group
@@ -64,18 +75,18 @@ default["cinder"]["storage"]["netapp"]["nfsdirect"]["export"] = ""
 
 # can use a separate 'cinder' network if so desired. Define this network in
 # your environment in the same way you define management/nova etc networks
-default["cinder"]["services"]["volume"]["network"] = "management"                 # node_attribute
+default["cinder"]["services"]["volume"]["network"] = "management"
 
 # LOGGING LEVEL
 # in order of verbosity (most to least)
 # DEBUG, INFO, WARNING, ERROR, CRITICAL
-default["cinder"]["config"]["log_verbosity"] = "INFO"                       # node_attributes
-default["cinder"]["config"]["storage_availability_zone"] = "nova"                       # node_attributes
-default["cinder"]["config"]["max_gigabytes"] = "10000"                      # node_attributes
+default["cinder"]["config"]["log_verbosity"] = "INFO"
+default["cinder"]["config"]["storage_availability_zone"] = "nova"
+default["cinder"]["config"]["max_gigabytes"] = "10000"
 
 case platform_family
 when "rhel"
-  default["cinder"]["platform"] = {                                                   # node_attribute
+  default["cinder"]["platform"] = {
     "cinder_api_packages" => ["openstack-cinder"],
     "cinder_api_service" => "openstack-cinder-api",
     "cinder_volume_packages" => ["openstack-cinder", "iscsi-initiator-utils", "qemu-img"],
@@ -91,7 +102,7 @@ when "rhel"
   default["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"] = ["nfs-utils", "sysfsutils"]
   default["cinder"]["ssl"]["dir"] = "/etc/pki/tls"
 when "debian"
-  default["cinder"]["platform"] = {                                                   # node_attribute
+  default["cinder"]["platform"] = {
     "cinder_api_packages" => ["cinder-common", "cinder-api"],
     "cinder_api_service" => "cinder-api",
     "cinder_volume_packages" => ["cinder-volume", "open-iscsi", "qemu-utils"],
