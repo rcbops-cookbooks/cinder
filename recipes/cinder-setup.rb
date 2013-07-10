@@ -37,11 +37,11 @@ platform_options = node["cinder"]["platform"]
 ks_admin_endpoint = get_access_endpoint("keystone-api", "keystone", "admin-api")
 keystone = get_settings_by_role("keystone-setup", "keystone")
 
-if volume_endpoint = get_bind_endpoint("cinder-api", "cinder", "api")
-  admin_volume_endpoint = get_bind_endpoint("cinder-api", "cinder", "admin-api")
-  internal_volume_endpoint = get_bind_endpoint("cinder-api", "cinder", "internal-api")
+if volume_endpoint = get_bind_endpoint("cinder", "api")
+  admin_volume_endpoint = get_bind_endpoint("cinder", "admin-api")
+  internal_volume_endpoint = get_bind_endpoint("cinder", "internal-api")
   Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from cinder-all role holder using get_access_endpoint")
-elsif volume_endpoint = get_bind_endpoint("nova-volume", "nova", "volume")
+elsif volume_endpoint = get_bind_endpoint("nova", "volume")
   admin_volume_endpoint = volume_endpoint
   internal_volume_endpoint = volume_endpoint
   Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from nova-volume role holder using get_access_endpoint")
