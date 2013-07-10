@@ -71,10 +71,12 @@ end
 if volume_endpoint["scheme"] == "https"
   include_recipe "cinder::cinder-api-ssl"
 else
-  apache_site "openstack-cinder-api" do
-    enable false
-    notifies :run, "execute[restore-selinux-context]", :immediately
-    notifies :restart, "service[apache2]", :immediately
+  if node.recipe?"apache2"
+    apache_site "openstack-cinder-api" do
+      enable false
+      notifies :run, "execute[restore-selinux-context]", :immediately
+      notifies :restart, "service[apache2]", :immediately
+    end
   end
 end
 
