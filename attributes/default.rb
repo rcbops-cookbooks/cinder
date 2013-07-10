@@ -20,6 +20,10 @@ default["cinder"]["services"]["api"]["network"] = "public"
 default["cinder"]["services"]["api"]["port"] = 8776
 default["cinder"]["services"]["api"]["path"] = "/v1/%(tenant_id)s"
 
+default["cinder"]["services"]["api"]["cert_file"] = "cinder.pem"
+default["cinder"]["services"]["api"]["key_file"] = "cinder.key"
+default["cinder"]["services"]["api"]["wsgi_file"] = "cinder-api"
+
 default["cinder"]["services"]["internal-api"]["scheme"] = "http"
 default["cinder"]["services"]["internal-api"]["network"] = "management"
 default["cinder"]["services"]["internal-api"]["port"] = 8776
@@ -29,10 +33,6 @@ default["cinder"]["services"]["admin-api"]["scheme"] = "http"
 default["cinder"]["services"]["admin-api"]["network"] = "management"
 default["cinder"]["services"]["admin-api"]["port"] = 8776
 default["cinder"]["services"]["admin-api"]["path"] = "/v1/%(tenant_id)s"
-
-default["cinder"]["services"]["api"]["cert_file"] = "cinder.pem"
-default["cinder"]["services"]["api"]["key_file"] = "cinder.key"
-default["cinder"]["services"]["api"]["wsgi_file"] = "cinder-api"
 
 # LVM Settings
 default["cinder"]["storage"]["lvm"]["volume_group"] = "cinder-volumes"     # name from volume group
