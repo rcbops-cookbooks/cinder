@@ -45,14 +45,6 @@ elsif volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
   Chef::Log.debug("cinder::cinder-api got cinder endpoint info from nova-volume role holder using get_access_endpoint")
 end
 
-# install packages for cinder-api
-platform_options["cinder_api_packages"].each do |pkg|
-  package pkg do
-    action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
-    options platform_options["package_overrides"]
-  end
-end
-
 include_recipe "cinder::cinder-common"
 
 # define the cinder-api service so we can call it later

@@ -87,7 +87,7 @@ default["cinder"]["config"]["max_gigabytes"] = "10000"
 case platform_family
 when "rhel"
   default["cinder"]["platform"] = {
-    "cinder_api_packages" => ["openstack-cinder"],
+    "cinder_common_packages" => ["openstack-cinder"],
     "cinder_api_service" => "openstack-cinder-api",
     "cinder_volume_packages" => ["openstack-cinder", "iscsi-initiator-utils", "qemu-img"],
     "cinder_volume_service" => "openstack-cinder-volume",
@@ -103,7 +103,7 @@ when "rhel"
   default["cinder"]["ssl"]["dir"] = "/etc/pki/tls"
 when "debian"
   default["cinder"]["platform"] = {
-    "cinder_api_packages" => ["cinder-common", "cinder-api"],
+    "cinder_common_packages" => ["cinder-common", "cinder-api"],
     "cinder_api_service" => "cinder-api",
     "cinder_volume_packages" => ["cinder-volume", "open-iscsi", "qemu-utils"],
     "cinder_volume_service" => "cinder-volume",
