@@ -19,11 +19,11 @@
 
 platform_options = node["cinder"]["platform"]
 
-platform_options["supporting_packages"].each do |pkg|
-  package pkg do
-    action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
-    options platform_options["package_overrides"]
-  end
+pkgs = platform_options["cinder_common_packages"] +
+  platform_options["supporting_packages"]
+
+pkgs.each do |pkg|
+  include_recipe "osops-utils::#{pkg}"
 end
 
 cinder_conf "/etc/cinder/cinder.conf" do
