@@ -59,14 +59,6 @@ mysql_info = create_db_and_user("mysql",
 mysql_connect_ip = get_access_endpoint('mysql-master', 'mysql', 'db')["host"]
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 
-# install packages for cinder-api
-platform_options["cinder_api_packages"].each do |pkg|
-  package pkg do
-    action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
-    options platform_options["package_overrides"]
-  end
-end
-
 include_recipe "cinder::cinder-common"
 
 execute "cinder-manage db sync" do
