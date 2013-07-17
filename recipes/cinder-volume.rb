@@ -50,7 +50,7 @@ template "/etc/tgt/targets.conf" do
   notifies :restart, "service[iscsitarget]", :immediately
 end
 
-case node["cinder"]["storage"]["provider"] 
+case node["cinder"]["storage"]["provider"]
   when "emc"
     d = node["cinder"]["storage"]["emc"]
     keys = %w[StorageType EcomServerIP EcomServerPort EcomUserName EcomPassword]
@@ -85,8 +85,8 @@ case node["cinder"]["storage"]["provider"]
       owner "cinder"
       group "cinder"
       variables(
-	     "host" => node["cinder"]["storage"]["netapp"]["nfsdirect"]["server_hostname"],
-	     "nfs_export" => node["cinder"]["storage"]["netapp"]["nfsdirect"]["export"]
+       "host" => node["cinder"]["storage"]["netapp"]["nfsdirect"]["server_hostname"],
+       "nfs_export" => node["cinder"]["storage"]["netapp"]["nfsdirect"]["export"]
       )
       notifies :restart, "service[cinder-volume]", :delayed
     end
