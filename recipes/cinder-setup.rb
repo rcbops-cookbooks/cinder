@@ -66,7 +66,7 @@ execute "cinder-manage db sync" do
   group "cinder"
   command "cinder-manage db sync"
   action :nothing
-  subscribes :run, "template[/etc/cinder/cinder.conf]", :immediately
+  subscribes :run, "cinder_conf[/etc/cinder/cinder.conf]", :immediately
 end
 
 # Register Cinder Volume Service
