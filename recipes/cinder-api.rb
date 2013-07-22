@@ -60,7 +60,7 @@ service "cinder-api" do
   supports :status => true, :restart => true
   unless volume_endpoint["scheme"] == "https"
     action :enable
-    subscribes :restart, "template[/etc/cinder/cinder.conf]", :delayed
+    subscribes :restart, "cinder_conf[/etc/cinder/cinder.conf]", :delayed
   else
     action [ :disable, :stop ]
   end
