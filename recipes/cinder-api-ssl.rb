@@ -81,6 +81,18 @@ elsif volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
   Chef::Log.debug("cinder::cinder-setup got cinder endpoint info from nova-volume role holder using get_access_endpoint")
 end
 
+unless node["cinder"]["services"]["api"].attribute?"cert_override"
+  cert_location = "#{node["cinder"]["ssl"]["dir"]}/certs/#{node["cinder"]["services"]["api"]["cert_file"]}"
+else
+  cert_location = node["cinder"]["services"]["api"]["cert_override"]
+end
+
+unless node["cinder"]["services"]["api"].attribute?"key_override"
+  key_location = "#{node["cinder"]["ssl"]["dir"]}/private/#{node["cinder"]["services"]["api"]["key_file"]}"
+else
+  key_location = node["cinder"]["services"]["api"]["key_override"]
+end
+
 template value_for_platform(
   ["ubuntu", "debian", "fedora"] => {
     "default" => "#{node["apache"]["dir"]}/sites-available/openstack-cinder-api"
@@ -102,8 +114,8 @@ template value_for_platform(
   variables(
     :listen_ip => volume_endpoint["host"],
     :service_port => volume_endpoint["port"],
-    :cert_file => "#{node["cinder"]["ssl"]["dir"]}/certs/#{node["cinder"]["services"]["api"]["cert_file"]}",
-    :key_file => "#{node["cinder"]["ssl"]["dir"]}/private/#{node["cinder"]["services"]["api"]["key_file"]}",
+    :cert_file => cert_location,
+    :key_file => key_location,
     :wsgi_file  => "#{node["apache"]["dir"]}/wsgi/#{node["cinder"]["services"]["api"]["wsgi_file"]}",
     :proc_group => "cinder-api",
     :log_file => "/var/log/cinder/cinder.log"
