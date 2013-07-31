@@ -3,6 +3,9 @@
 default["enable_monit"] = false  # OS provides packages                     # cluster_attribute
 ########################################################################
 
+default["cinder"]["rabbitmq"]["use_durable_queues"] = true
+default["cinder"]["rabbitmq"]["use_ha_queues"] = true
+
 # lvm/netappiscsi/emc/solidfire/netappnfsdirect
 default["cinder"]["storage"]["provider"] = "lvm"
 default["cinder"]["storage"]["iscsi"]["ip_address"] = nil
