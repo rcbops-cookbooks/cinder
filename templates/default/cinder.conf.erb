@@ -9,7 +9,6 @@ state_path = /var/lib/cinder
 sql_connection = mysql://<%= @db_user %>:<%= @db_password %>@<%= @db_ip_address %>/<%= @db_name %>
 rabbit_host = <%= @rabbit_ipaddress %>
 rabbit_port = <%= @rabbit_port %>
-rabbit_durable_queues = <%= @rabbit_durable_queues %>
 rabbit_ha_queues = <%= @rabbit_ha_queues %>
 osapi_volume_listen = <%= @cinder_api_listen_ip %>
 osapi_volume_listen_port = <%= @cinder_api_listen_port %>

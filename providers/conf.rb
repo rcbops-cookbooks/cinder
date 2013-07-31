@@ -79,7 +79,6 @@ action :create do
                      "rabbit_ipaddress" => rabbit_info["host"],
                      "rabbit_port" => rabbit_info["port"],
                      "rabbit_ha_queues" => node["cinder"]["rabbitmq"]["use_ha_queues"],
-                     "rabbit_durable_queues" => node["cinder"]["rabbitmq"]["use_durable_queues"],
                      "cinder_api_listen_ip" => cinder_api["host"],
                      "cinder_api_listen_port" => cinder_api["port"],
                      "storage_availability_zone" => node["cinder"]["config"]["storage_availability_zone"],
