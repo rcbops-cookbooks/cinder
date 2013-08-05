@@ -3,6 +3,13 @@
 default["enable_monit"] = false  # OS provides packages                     # cluster_attribute
 ########################################################################
 
+# Define the ha policy for queues.  If you change this to true
+# after you have already deployed you will need to wipe the RabbitMQ
+# database by stopping rabbitmq, removing /var/lib/rabbitmq/mnesia
+# and starting rabbitmq back up.  Failure to do so will cause the
+# OpenStack services to fail to connect to RabbitMQ.
+default["cinder"]["rabbitmq"]["use_ha_queues"] = false
+
 # lvm/netappiscsi/emc/solidfire/netappnfsdirect
 default["cinder"]["storage"]["provider"] = "lvm"
 default["cinder"]["storage"]["iscsi"]["ip_address"] = nil
