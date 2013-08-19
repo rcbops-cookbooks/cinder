@@ -45,6 +45,8 @@ default["cinder"]["services"]["admin-api"]["path"] = "/v1/%(tenant_id)s"
 default["cinder"]["storage"]["lvm"]["volume_group"] = "cinder-volumes"     # name from volume group
 default["cinder"]["storage"]["lvm"]["volume_clear"] = "zero"               # none, zero, shred
 default["cinder"]["storage"]["lvm"]["pool_size"] = "None"                  # Size of thin provisioning pool
+#List of regex to prevent LVM scanning vm devices
+default['cinder']['storage']['lvm']['conf']['device_filter'] = '[ "a|^/dev/sd.*$|", "r/.*/" ]'
 
 # solidfire settings - set these if you are using solidfire
 # as the storage provider above

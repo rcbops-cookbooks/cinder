@@ -90,4 +90,20 @@ case node["cinder"]["storage"]["provider"]
       )
       notifies :restart, "service[cinder-volume]", :delayed
     end
+  when 'lvm'
+    execute 'vgscan' do
+      command 'vgscan'
+      action :nothing
+    end
+
+    template '/etc/lvm/lvm.conf' do
+      source 'lvm.conf.erb'
+      mode '0644'
+      owner 'root'
+      group 'root'
+      variables(
+        "device_filter" => node['cinder']['storage']['lvm']['conf']['device_filter']
+      )
+      notifies :run, 'execute[vgscan]', :immediately
+    end
 end
