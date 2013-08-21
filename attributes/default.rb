@@ -45,6 +45,7 @@ default["cinder"]["services"]["admin-api"]["path"] = "/v1/%(tenant_id)s"
 default["cinder"]["storage"]["lvm"]["volume_group"] = "cinder-volumes"     # name from volume group
 default["cinder"]["storage"]["lvm"]["volume_clear"] = "zero"               # none, zero, shred
 default["cinder"]["storage"]["lvm"]["pool_size"] = "None"                  # Size of thin provisioning pool
+default["cinder"]["storage"]["lvm"]["config"] = "/etc/lvm/lvm.conf"        # Path of LVM config file
 
 # solidfire settings - set these if you are using solidfire
 # as the storage provider above
