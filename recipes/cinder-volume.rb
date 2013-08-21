@@ -90,4 +90,12 @@ case node["cinder"]["storage"]["provider"]
       )
       notifies :restart, "service[cinder-volume]", :delayed
     end
+  when "lvm"
+    template node["cinder"]["storage"]["lvm"]["config"] do
+      source "lvm.conf.erb"
+      mode 0644
+      variables(
+        "volume_group" => node["cinder"]["storage"]["lvm"]["volume_group"]
+      )
+    end
 end
