@@ -62,6 +62,12 @@ action :create do
     storage_options["volume_group"] = node["cinder"]["storage"]["lvm"]["volume_group"]
     storage_options["volume_clear"] = node["cinder"]["storage"]["lvm"]["volume_clear"]
     storage_options["volume_pool_size"] = node["cinder"]["storage"]["lvm"]["pool_size"]
+  when "rbd"
+    storage_options["volume_driver"] = "cinder.volume.drivers.rbd.RBDDriver"
+    storage_options["rbd_pool"] = node["cinder"]["storage"]["rbd"]["rbd_pool"]
+    storage_options["rbd_user"] = node["cinder"]["storage"]["rbd"]["rbd_user"]
+    storage_options["rbd_secret_uuid"] = node["cinder"]["storage"]["rbd"]["rbd_secret_uuid"]
+    storage_options["glance_api_version"] = "2"
   else
     msg = "#{storage_provider}, is not currently supported by these cookbooks. Please change the storage provider attribute in your environment to one of lvm, emc, solidfire, netappiscsi, netappnfsdirect."
     Chef::Application.fatal! msg
