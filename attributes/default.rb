@@ -81,6 +81,13 @@ default["cinder"]["storage"]["netapp"]["nfsdirect"]["transport_type"] = "https"
 default["cinder"]["storage"]["netapp"]["nfsdirect"]["nfs_shares_config"] = "/etc/cinder/shares.txt"
 default["cinder"]["storage"]["netapp"]["nfsdirect"]["export"] = ""
 
+# Ceph RBD settings - set these if you're using Ceph RBD Volumes
+# http://docs.openstack.org/grizzly/openstack-block-storage/admin/content/ceph-rados.html
+# http://ceph.com/docs/next/rbd/rbd-openstack/
+default["cinder"]["storage"]["rbd"]["rbd_pool"] = "volumes"
+default["cinder"]["storage"]["rbd"]["rbd_user"] = "volumes"
+default["cinder"]["storage"]["rbd"]["rbd_secret_uuid"] = ""
+
 # can use a separate 'cinder' network if so desired. Define this network in
 # your environment in the same way you define management/nova etc networks
 default["cinder"]["services"]["volume"]["network"] = "management"
