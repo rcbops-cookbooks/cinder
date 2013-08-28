@@ -119,7 +119,12 @@ Default (LVM)
 
 By default, the 'lvm' provider is chosen.  No special configuration is
 necessary on the chef side, but the cinder volume node must have an
-lvm volume group named cinder volumes.
+lvm volume group named cinder-volumes. The attributes below can be
+adjusted for non-standard LVM configurations:
+
+node["cinder"]["storage"]["lvm"]["volume_group"] = "cinder-volumes"
+node["cinder"]["storage"]["lvm"]["volume_clear"] = "zero"
+node["cinder"]["storage"]["lvm"]["config"] = "/etc/lvm/lvm.conf"
 
 EMC
 ---
