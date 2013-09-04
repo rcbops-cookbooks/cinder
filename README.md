@@ -125,6 +125,10 @@ adjusted for non-standard LVM configurations:
 node["cinder"]["storage"]["lvm"]["volume_group"] = "cinder-volumes"
 node["cinder"]["storage"]["lvm"]["volume_clear"] = "zero"
 node["cinder"]["storage"]["lvm"]["config"] = "/etc/lvm/lvm.conf"
+node["cinder"]["storage"]["lvm"]["volume_clear_size"] = 0
+node["cinder"]["storage"]["lvm"]["pool_size"] = "None"
+node["cinder"]["storage"]["lvm"]["mirrors"] = 0
+node["cinder"]["storage"]["lvm"]["volume_driver"] = "cinder.volume.drivers.lvm.LVMISCSIDriver"
 
 EMC
 ---
