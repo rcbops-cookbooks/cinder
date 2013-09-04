@@ -44,7 +44,14 @@ default["cinder"]["services"]["admin-api"]["path"] = "/v1/%(tenant_id)s"
 # LVM Settings
 default["cinder"]["storage"]["lvm"]["volume_group"] = "cinder-volumes"     # name from volume group
 default["cinder"]["storage"]["lvm"]["volume_clear"] = "zero"               # none, zero, shred
+default["cinder"]["storage"]["lvm"]["volume_clear_size"] = 0               # 
+default["cinder"]["storage"]["lvm"]["pool_size"] = "None"                  # 
+default["cinder"]["storage"]["lvm"]["mirrors"] = 0                         #
 default["cinder"]["storage"]["lvm"]["config"] = "/etc/lvm/lvm.conf"        # Path of LVM config file
+# Optional value: cinder.volume.drivers.lvm.ThinLVMVolumeDriver
+# if ThinLVMVolumeDriver is set then existing VGs must be deleted (maybe?)
+default["cinder"]["storage"]["lvm"]["volume_driver"] = "cinder.volume.drivers.lvm.LVMISCSIDriver"
+
 
 # solidfire settings - set these if you are using solidfire
 # as the storage provider above
