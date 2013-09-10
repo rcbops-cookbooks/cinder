@@ -14,7 +14,6 @@ action :create do
 
   cinder_volume_network = node["cinder"]["services"]["volume"]["network"]
 
-
   # Set iscsi address
   iscsi_ip_address = node["cinder"]["storage"]["iscsi"]["ip_address"]
   iscsi_ip_address ||= get_ip_for_net(cinder_volume_network)
@@ -28,8 +27,8 @@ action :create do
     Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup recipe holder")
   end
 
-
-  # Currently we support SolidFire, EMC VMAX/VNX, NetApp ISCSI (onCommand), and NetApp NFSDirect
+  # Currently we support SolidFire, EMC VMAX/VNX, NetApp ISCSI (onCommand), 
+  # NetApp NFSDirect and ceph RBD
   storage_provider = node["cinder"]["storage"]["provider"]
   storage_options = {}
   case storage_provider
@@ -61,6 +60,13 @@ action :create do
   when "lvm"
     storage_options["volume_group"] = node["cinder"]["storage"]["lvm"]["volume_group"]
     storage_options["volume_clear"] = node["cinder"]["storage"]["lvm"]["volume_clear"]
+    storage_options["volume_pool_size"] = node["cinder"]["storage"]["lvm"]["pool_size"]
+  when "rbd"
+    storage_options["volume_driver"] = "cinder.volume.drivers.rbd.RBDDriver"
+    storage_options["rbd_pool"] = node["cinder"]["storage"]["rbd"]["rbd_pool"]
+    storage_options["rbd_user"] = node["cinder"]["storage"]["rbd"]["rbd_user"]
+    storage_options["rbd_secret_uuid"] = node["cinder"]["storage"]["rbd"]["rbd_secret_uuid"]
+    storage_options["glance_api_version"] = "2"
   else
     msg = "#{storage_provider}, is not currently supported by these cookbooks. Please change the storage provider attribute in your environment to one of lvm, emc, solidfire, netappiscsi, netappnfsdirect."
     Chef::Application.fatal! msg
@@ -82,7 +88,7 @@ action :create do
       "cinder_api_listen_port" => cinder_api["port"],
       "storage_availability_zone" => node["cinder"]["config"]["storage_availability_zone"],
       "max_gigabytes" => node["cinder"]["config"]["max_gigabytes"],
-     "storage_options" => storage_options,
+      "storage_options" => storage_options,
       "iscsi_ip_address" => iscsi_ip_address,
       "glance_host" => glance_api["host"]
   )
