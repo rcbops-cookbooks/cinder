@@ -1,7 +1,9 @@
 use_inline_resources if Gem::Version.new(Chef::VERSION) >= Gem::Version.new('11')
 
 action :create do
-  log "Creating cinder.conf"
+  # Don't log during converge in LWP, it unconditionally marks the LWR
+  # as updated; log during compile phase only.
+  Chef::Log.info("Creating #{new_resource.name}")
 
   platform_options = node["cinder"]["platform"]
 
