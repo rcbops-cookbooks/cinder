@@ -46,7 +46,6 @@ cookbook_file "#{node["cinder"]["ssl"]["dir"]}/certs/#{node["cinder"]["services"
   mode 0644
   owner "root"
   group "root"
-  notifies :run, "execute[restore-selinux-context]", :immediately
 end
 
 cookbook_file "#{node["cinder"]["ssl"]["dir"]}/private/#{node["cinder"]["services"]["api"]["key_file"]}" do
@@ -54,7 +53,6 @@ cookbook_file "#{node["cinder"]["ssl"]["dir"]}/private/#{node["cinder"]["service
   mode 0644
   owner "root"
   group grp
-  notifies :run, "execute[restore-selinux-context]", :immediately
 end
 
 # setup wsgi file
@@ -120,12 +118,10 @@ template value_for_platform(
     :proc_group => "cinder-api",
     :log_file => "/var/log/cinder/cinder.log"
   )
-  notifies :run, "execute[restore-selinux-context]", :immediately
   notifies :reload, "service[apache2]", :delayed
 end
 
 apache_site "openstack-cinder-api" do
   enable true
-  notifies :run, "execute[restore-selinux-context]", :immediately
   notifies :restart, "service[apache2]", :immediately
 end
