@@ -63,6 +63,7 @@ case node["cinder"]["storage"]["provider"]
     node["cinder"]["storage"]["emc"]["packages"].each do |pkg|
       package pkg do
         action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+        options platform_options["package_overrides"]
       end
     end
 
@@ -76,6 +77,7 @@ case node["cinder"]["storage"]["provider"]
     node["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"].each do |pkg|
       package pkg do
         action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+        options platform_options["package_overrides"]
       end
     end
 
