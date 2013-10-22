@@ -24,7 +24,7 @@ pkgs = platform_options["cinder_volume_packages"] + platform_options["cinder_isc
 pkgs.each do |pkg|
   package pkg do
     action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
-    options platform_options["package_overrides"]
+    options platform_options["package_options"]
   end
 end
 
@@ -63,7 +63,7 @@ case node["cinder"]["storage"]["provider"]
     node["cinder"]["storage"]["emc"]["packages"].each do |pkg|
       package pkg do
         action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
-        options platform_options["package_overrides"]
+        options platform_options["package_options"]
       end
     end
 
@@ -77,7 +77,7 @@ case node["cinder"]["storage"]["provider"]
     node["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"].each do |pkg|
       package pkg do
         action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
-        options platform_options["package_overrides"]
+        options platform_options["package_options"]
       end
     end
 

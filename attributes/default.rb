@@ -111,7 +111,7 @@ when "rhel"
     "cinder_iscsitarget_packages" => ["scsi-target-utils"],
     "cinder_iscsitarget_service" => "tgtd",
     "supporting_packages" => ["python-cinderclient", "MySQL-python", "python-keystone"],
-    "package_overrides" => ""
+    "package_options" => ""
   }
   default["cinder"]["storage"]["emc"]["packages"] = ["pywbem"]
   default["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"] = ["nfs-utils", "sysfsutils"]
@@ -128,7 +128,7 @@ when "debian"
     "cinder_iscsitarget_packages" => ["tgt"],
     "cinder_iscsitarget_service" => "tgt",
     "supporting_packages" => ["python-cinderclient", "python-mysqldb"],
-    "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
+    "package_options" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
   }
   default["cinder"]["storage"]["emc"]["packages"] = ["python-pywbem"]
   default["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"] = ["nfs-common", "sysfsutils"]

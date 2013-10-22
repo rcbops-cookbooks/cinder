@@ -47,7 +47,7 @@ end
 
 platform_options["cinder_api_packages"].each do |pkg|
   package pkg do
-    options platform_options["package_overrides"]
+    options platform_options["package_options"]
     action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
   end
 end
