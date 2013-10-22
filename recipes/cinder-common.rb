@@ -22,12 +22,12 @@ platform_options = node["cinder"]["platform"]
 pkgs = platform_options["cinder_common_packages"] +
   platform_options["supporting_packages"]
 
-pkgs.each do |pkg|
-  include_recipe "osops-utils::#{pkg}"
-end
-
 cinder_conf "/etc/cinder/cinder.conf" do
   action :create
+end
+
+pkgs.each do |pkg|
+  include_recipe "osops-utils::#{pkg}"
 end
 
 # now we are using mysql in the config file, ditch the original sqlite file
