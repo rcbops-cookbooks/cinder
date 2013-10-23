@@ -29,7 +29,7 @@ action :create do
     Chef::Log.info("cinder::cinder-volume got cinder_info from cinder-setup recipe holder")
   end
 
-  # Currently we support SolidFire, EMC VMAX/VNX, NetApp ISCSI (onCommand), 
+  # Currently we support SolidFire, EMC VMAX/VNX, NetApp ISCSI (onCommand),
   # NetApp NFSDirect and ceph RBD
   storage_provider = node["cinder"]["storage"]["provider"]
   storage_options = {}
@@ -73,11 +73,29 @@ action :create do
     msg = "#{storage_provider}, is not currently supported by these cookbooks. Please change the storage provider attribute in your environment to one of lvm, emc, solidfire, netappiscsi, netappnfsdirect."
     Chef::Application.fatal! msg
   end
+
+  # Create Cinder User
+  user "cinder" do
+    comment "openstack cinder user"
+    system true
+    home "/var/lib/cinder"
+    shell "/bin/false"
+  end
+
+  # Create Cinder Config Directory
+  directory "/etc/cinder" do
+    owner "cinder"
+    group "cinder"
+    mode "755"
+    recursive true
+  end
+
+  # Set template for Cinder config
   t = template "/etc/cinder/cinder.conf" do
     source "cinder.conf.erb"
     owner "cinder"
     group "cinder"
-    mode "0600" 
+    mode "0600"
     variables(
       "db_ip_address" => mysql_info["host"],
       "db_user" => node["cinder"]["db"]["username"],
