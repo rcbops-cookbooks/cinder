@@ -61,14 +61,6 @@ rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 
 include_recipe "cinder::cinder-common"
 
-execute "cinder-manage db sync" do
-  user "cinder"
-  group "cinder"
-  command "cinder-manage db sync"
-  action :nothing
-  subscribes :run, "cinder_conf[/etc/cinder/cinder.conf]", :immediately
-end
-
 # Register Cinder Volume Service
 keystone_service "Register Cinder Service" do
   auth_host ks_admin_endpoint["host"]
