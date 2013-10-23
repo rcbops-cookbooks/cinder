@@ -30,6 +30,13 @@ pkgs.each do |pkg|
   include_recipe "osops-utils::#{pkg}"
 end
 
+execute "cinder-manage db sync" do
+  user "cinder"
+  group "cinder"
+  command "cinder-manage db sync"
+  action :run
+end
+
 # now we are using mysql in the config file, ditch the original sqlite file
 file "/var/lib/cinder/cinder.sqlite" do
   action :delete
