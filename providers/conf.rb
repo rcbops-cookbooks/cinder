@@ -80,6 +80,7 @@ action :create do
     system true
     home "/var/lib/cinder"
     shell "/bin/false"
+    not_if "id cinder"
   end
 
   # Create Cinder Config Directory
