@@ -42,6 +42,14 @@ cookbook_file "/etc/cinder/#{node["cinder"]["policy"]}" do
   group "cinder"
 end
 
+# Set the policy json
+cookbook_file "/etc/cinder/api-paste.ini" do
+  source "openstack_defaults/api-paste.ini"
+  mode 0644
+  owner "cinder"
+  group "cinder"
+end
+
 # Setup Conf File
 cinder_conf "/etc/cinder/cinder.conf" do
   action :create
