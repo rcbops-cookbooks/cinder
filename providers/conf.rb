@@ -5,8 +5,6 @@ action :create do
   # as updated; log during compile phase only.
   Chef::Log.info("Creating #{new_resource.name}")
 
-  platform_options = node["cinder"]["platform"]
-
   # Search for required endpoints
   rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
   rabbit_settings = get_settings_by_role("rabbitmq-server", "rabbitmq")
@@ -74,21 +72,10 @@ action :create do
     Chef::Application.fatal! msg
   end
 
-  # Create Cinder User
-  user "cinder" do
-    comment "openstack cinder user"
-    system true
-    home "/var/lib/cinder"
-    shell "/bin/false"
-  end
-
-  # Create Cinder Config Directory
-  directory "/etc/cinder" do
-    owner "cinder"
-    group "cinder"
-    mode "755"
-    recursive true
-  end
+  # Get Keystone Data
+  ks_service_endpoint = get_access_endpoint("keystone-api", "keystone", "service-api")
+  ks_admin_endpoint = get_access_endpoint("keystone-api", "keystone", "admin-api")
+  keystone = get_settings_by_role("keystone-setup", "keystone")
 
   # Set template for Cinder config
   t = template "/etc/cinder/cinder.conf" do
@@ -110,8 +97,24 @@ action :create do
       "max_gigabytes" => node["cinder"]["config"]["max_gigabytes"],
       "storage_options" => storage_options,
       "iscsi_ip_address" => iscsi_ip_address,
-      "glance_host" => glance_api["host"]
-  )
+      "glance_host" => glance_api["host"],
+
+      "service_tenant_name" => node["cinder"]["service_tenant_name"],
+      "service_user" => node["cinder"]["service_user"],
+      "service_pass" => cinder_info["service_pass"],
+      "keystone_service_api_ipaddress" => ks_service_endpoint["host"],
+      "keystone_admin_api_ipaddress" => ks_admin_endpoint["host"],
+      "service_port" => ks_service_endpoint["port"],
+      "service_protocol" => ks_service_endpoint["scheme"],
+      "admin_port" => ks_admin_endpoint["port"],
+      "admin_protocol" => ks_admin_endpoint["scheme"],
+      "admin_token" => keystone["admin_token"]
+    )
+    unless volume_endpoint["scheme"] == "https"
+      notifies :restart, "service[cinder-api]", :delayed
+    else
+      notifies :restart, "service[apache2]", :immediately
+    end
   end
   new_resource.updated_by_last_action(t.updated_by_last_action?)
 end
