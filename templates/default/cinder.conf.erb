@@ -32,6 +32,8 @@ osapi_volume_listen_port = <%= @cinder_api_listen_port %>
 
 ##### STORAGE OPTIONS #####
 state_path = /var/lib/cinder
+lock_path = /var/lock/cinder
+volumes_dir = /var/lib/cinder/volumes
 volume_name_template = volume-%s
 storage_availability_zone = <%= @storage_availability_zone %>
 max_gigabytes = <%= @max_gigabytes %>

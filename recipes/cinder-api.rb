@@ -31,7 +31,15 @@ end
 
 include_recipe "cinder::cinder-common"
 
-# define the cinder-api service so we can call it later
+if volume_endpoint = get_access_endpoint("cinder-all", "cinder", "api")
+  Chef::Log.debug("cinder::cinder-api got cinder endpoint info from cinder-all role holder using get_access_endpoint")
+elsif volume_endpoint = get_bind_endpoint("cinder", "api")
+  Chef::Log.debug("cinder::cinder-api got cinder endpoint info from cinder-api role holder using get_bind_endpoint")
+elsif volume_endpoint = get_access_endpoint("nova-volume", "nova", "volume")
+  Chef::Log.debug("cinder::cinder-api got cinder endpoint info from nova-volume role holder using get_access_endpoint")
+end
+
+# define the cinder-api service
 service "cinder-api" do
   service_name platform_options["cinder_api_service"]
   supports :status => true, :restart => true

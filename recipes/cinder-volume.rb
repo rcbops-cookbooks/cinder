@@ -44,9 +44,23 @@ service "iscsitarget" do
   action :enable
 end
 
-template "/etc/tgt/targets.conf" do
-  source "targets.conf.erb"
-  mode "600"
+# Create Cinder Config Directory
+directory "/etc/tgt/conf.d/" do
+  mode "755"
+  recursive true
+end
+
+# Drop targets conf
+cookbook_file "/etc/tgt/targets.conf" do
+  source "openstack_defaults/targets.conf"
+  mode "644"
+  notifies :restart, "service[iscsitarget]", :immediately
+end
+
+# Drop cinder conf
+cookbook_file "/etc/tgt/conf.d/cinder_tgt.conf" do
+  source "openstack_defaults/cinder_tgt.conf"
+  mode "644"
   notifies :restart, "service[iscsitarget]", :immediately
 end
 

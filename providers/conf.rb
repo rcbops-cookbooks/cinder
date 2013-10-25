@@ -84,6 +84,7 @@ action :create do
     group "cinder"
     mode "0600"
     variables(
+      "policy" => node["cinder"]["policy"],
       "db_ip_address" => mysql_info["host"],
       "db_user" => node["cinder"]["db"]["username"],
       "db_password" => cinder_info["db"]["password"],
@@ -110,11 +111,6 @@ action :create do
       "admin_protocol" => ks_admin_endpoint["scheme"],
       "admin_token" => keystone["admin_token"]
     )
-    unless volume_endpoint["scheme"] == "https"
-      notifies :restart, "service[cinder-api]", :delayed
-    else
-      notifies :restart, "service[apache2]", :immediately
-    end
   end
   new_resource.updated_by_last_action(t.updated_by_last_action?)
 end
