@@ -51,13 +51,12 @@ Chef::Log.debug("volume_endpoint contains: #{volume_endpoint}")
 
 #creates cinder db and user
 #function defined in osops-utils/libraries
-mysql_info = create_db_and_user("mysql",
-                   node["cinder"]["db"]["name"],
-                   node["cinder"]["db"]["username"],
-                   node["cinder"]["db"]["password"])
-
-mysql_connect_ip = get_access_endpoint('mysql-master', 'mysql', 'db')["host"]
-rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
+create_db_and_user(
+    "mysql",
+    node["cinder"]["db"]["name"],
+    node["cinder"]["db"]["username"],
+    node["cinder"]["db"]["password"]
+)
 
 include_recipe "cinder::cinder-common"
 

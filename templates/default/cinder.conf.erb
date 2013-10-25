@@ -1,26 +1,59 @@
 [DEFAULT]
-rootwrap_config = /etc/cinder/rootwrap.conf
-api_paste_confg = /etc/cinder/api-paste.ini
-iscsi_helper = tgtadm
-rpc_backend=cinder.openstack.common.rpc.impl_kombu
-volume_name_template = volume-%s
+
+##### GENERAL CONFIG #####
 verbose = True
-auth_strategy = keystone
-state_path = /var/lib/cinder
+policy_file=<%= @policy %>
+rootwrap_config = /etc/cinder/rootwrap.conf
+
+
+##### SQL OPTIONS #####
 sql_connection = mysql://<%= @db_user %>:<%= @db_password %>@<%= @db_ip_address %>/<%= @db_name %>
+
+
+##### ISCSI OPTIONS #####
+iscsi_helper = tgtadm
+iscsi_ip_address = <%= @iscsi_ip_address %>
+
+
+#### RPC OPTIONS #####
+rpc_backend=cinder.openstack.common.rpc.impl_kombu
 rabbit_host = <%= @rabbit_ipaddress %>
 rabbit_port = <%= @rabbit_port %>
 rabbit_ha_queues = <%= @rabbit_ha_queues %>
+
+
+##### API OPTIONS #####
+auth_strategy = keystone
+api_paste_confg = /etc/cinder/api-paste.ini
+notification_driver=cinder.openstack.common.notifier.rpc_notifier
 osapi_volume_listen = <%= @cinder_api_listen_ip %>
 osapi_volume_listen_port = <%= @cinder_api_listen_port %>
-iscsi_ip_address = <%= @iscsi_ip_address %>
+
+
+##### STORAGE OPTIONS #####
+state_path = /var/lib/cinder
+lock_path = /var/lock/cinder
+volumes_dir = /var/lib/cinder/volumes
+volume_name_template = volume-%s
 storage_availability_zone = <%= @storage_availability_zone %>
 max_gigabytes = <%= @max_gigabytes %>
 glance_host = <%= @glance_host %>
-notification_driver=cinder.openstack.common.notifier.rpc_notifier
+
 
 #### STORAGE PROVIDER INFORMATION ####
 <%= render "partials/storage-options.partial.erb" %>
 
+
+##### KEYSTONE OPTIONS #####
 [keystone_authtoken]
 signing_dirname = /tmp/keystone-signing-cinder
+service_protocol = <%= @service_protocol %>
+service_host = <%= @keystone_service_api_ipaddress %>
+service_port = <%= @service_port %>
+auth_host = <%= @keystone_admin_api_ipaddress %>
+auth_port = <%= @admin_port %>
+auth_protocol = <%= @admin_protocol %>
+admin_tenant_name = <%= @service_tenant_name %>
+admin_user = <%= @service_user %>
+admin_password = <%= @service_pass %>
+
