@@ -17,14 +17,40 @@
 # limitations under the License.
 #
 
+# Create Cinder User
+user "cinder" do
+  comment "openstack cinder user"
+  system true
+  home "/var/lib/cinder"
+  shell "/bin/false"
+  not_if "id cinder"
+end
+
+# Create Cinder Config Directory
+directory "/etc/cinder" do
+  owner "cinder"
+  group "cinder"
+  mode "755"
+  recursive true
+end
+
+# Set the policy json
+cookbook_file "/etc/cinder/#{node["cinder"]["policy"]}" do
+  source "openstack_defaults/policy.json"
+  mode 0644
+  owner "cinder"
+  group "cinder"
+end
+
+# Setup Conf File
+cinder_conf "/etc/cinder/cinder.conf" do
+  action :create
+end
+
 platform_options = node["cinder"]["platform"]
 
 pkgs = platform_options["cinder_common_packages"] +
   platform_options["supporting_packages"]
-
-cinder_conf "/etc/cinder/cinder.conf" do
-  action :create
-end
 
 pkgs.each do |pkg|
   include_recipe "osops-utils::#{pkg}"
