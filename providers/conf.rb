@@ -57,9 +57,11 @@ action :create do
     storage_options["iscsi_target_prefix"] = "iqn.1992-04.com.emc"
     storage_options["volume_driver"] = "cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver"
     storage_options["cinder_emc_config_file"] = "/etc/cinder/cinder_emc_config.xml"
-  when "lvm"
+    when "lvm"
+    storage_options["volume_driver"] = node["cinder"]["storage"]["lvm"]["volume_driver"]
     storage_options["volume_group"] = node["cinder"]["storage"]["lvm"]["volume_group"]
     storage_options["volume_clear"] = node["cinder"]["storage"]["lvm"]["volume_clear"]
+    storage_options["volume_clear_size"] = node["cinder"]["storage"]["lvm"]["volume_clear_size"]
     storage_options["volume_pool_size"] = node["cinder"]["storage"]["lvm"]["pool_size"]
   when "rbd"
     storage_options["volume_driver"] = "cinder.volume.drivers.rbd.RBDDriver"
