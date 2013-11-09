@@ -57,7 +57,7 @@ action :create do
     storage_options["iscsi_target_prefix"] = "iqn.1992-04.com.emc"
     storage_options["volume_driver"] = "cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver"
     storage_options["cinder_emc_config_file"] = "/etc/cinder/cinder_emc_config.xml"
-    when "lvm"
+  when "lvm"
     storage_options["volume_driver"] = node["cinder"]["storage"]["lvm"]["volume_driver"]
     storage_options["volume_group"] = node["cinder"]["storage"]["lvm"]["volume_group"]
     storage_options["volume_clear"] = node["cinder"]["storage"]["lvm"]["volume_clear"]
@@ -71,6 +71,21 @@ action :create do
     storage_options["glance_api_version"] = "2"
   else
     msg = "#{storage_provider}, is not currently supported by these cookbooks. Please change the storage provider attribute in your environment to one of lvm, emc, solidfire, netappiscsi, netappnfsdirect."
+    Chef::Application.fatal! msg
+  end
+
+  notification_provider = node["cinder"]["notification"]["driver"]
+  case notification_provider
+  when "rabbit"
+    notification_driver = "cinder.openstack.common.notifier.rabbit_notifier"
+  when "no_op"
+    notification_driver = "cinder.openstack.common.notifier.no_op_notifier"
+  when "rpc"
+    notification_driver = "cinder.openstack.common.notifier.rpc_notifier"
+  when "log"
+    notification_driver = "cinder.openstack.common.notifier.log_notifier"
+  else
+    msg = "#{notification_provider}, is not currently supported by these cookbooks."
     Chef::Application.fatal! msg
   end
 
@@ -94,6 +109,8 @@ action :create do
       "rabbit_ipaddress" => rabbit_info["host"],
       "rabbit_port" => rabbit_info["port"],
       "rabbit_ha_queues" => rabbit_settings["cluster"] ? "True" : "False",
+      "notification_driver" => notification_driver,
+      "notification_topics" => node["cinder"]["notification"]["topics"],
       "cinder_api_listen_ip" => cinder_api["host"],
       "cinder_api_listen_port" => cinder_api["port"],
       "storage_availability_zone" => node["cinder"]["config"]["storage_availability_zone"],
@@ -101,7 +118,6 @@ action :create do
       "storage_options" => storage_options,
       "iscsi_ip_address" => iscsi_ip_address,
       "glance_host" => glance_api["host"],
-
       "service_tenant_name" => node["cinder"]["service_tenant_name"],
       "service_user" => node["cinder"]["service_user"],
       "service_pass" => cinder_info["service_pass"],
