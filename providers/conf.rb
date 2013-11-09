@@ -76,8 +76,6 @@ action :create do
 
   notification_provider = node["cinder"]["notification"]["driver"]
   case notification_provider
-  when "rabbit"
-    notification_driver = "cinder.openstack.common.notifier.rabbit_notifier"
   when "no_op"
     notification_driver = "cinder.openstack.common.notifier.no_op_notifier"
   when "rpc"
