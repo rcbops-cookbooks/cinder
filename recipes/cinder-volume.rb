@@ -166,7 +166,18 @@ case node["cinder"]["storage"]["provider"]
 
           # get the key for this user and set it to the node hash so it's
           # searchable as nova::libvirt needs it
-          #
+          rbd_user_key = Mixlib::ShellOut.new("ceph auth get-key client.#{rbd_user} ").run_command.stdout
+          node.set['cinder']['storage']['rbd']['rbd_user_key'] = rbd_user_key
+
+          # get the full client, with caps, and write it out to file
+          # TODO(mancdaz): discover ceph config dir rather than hardcode
+          rbd_user_keyring = Mixlib::ShellOut.new("ceph auth get client.#{rbd_user}").run_command.stdout
+          f = File.open("/etc/ceph/ceph.client.#{rbd_user}.keyring", 'w')
+          f.write(rbd_user_keyring)
+          f.close
+
+          # create the pool with provided pg_num
+          Mixlib::ShellOut.new("ceph osd pool create #{rbd_pool} #{rbd_pool_pg_num} #{rbd_pool_pg_num}").run_command
         end
       end
     end
