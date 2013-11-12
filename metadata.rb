@@ -12,7 +12,7 @@ recipe           "cinder-volume", ""
   supports os
 end
 
-%w{ apt database mysql osops-utils yum apache2 }.each do |dep|
+%w{ apt database mysql osops-utils yum apache2 ceph }.each do |dep|
   depends dep
 end
 
