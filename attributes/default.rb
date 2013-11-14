@@ -14,6 +14,10 @@ procmatch_base = '^((/usr/bin/)?python\d? )?(/usr/bin/)?'
 # OpenStack services to fail to connect to RabbitMQ.
 default["cinder"]["rabbitmq"]["use_ha_queues"] = false
 
+# Options are no_op, rpc, log
+default["cinder"]["notification"]["driver"] = "no_op"
+default["cinder"]["notification"]["topics"] = "notifications"
+
 # Set policy JSON
 default["cinder"]["policy"] = "policy.json"
 
