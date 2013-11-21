@@ -133,11 +133,10 @@ case node["cinder"]["storage"]["provider"]
       ruby_block "create cinder cephx client" do
         block do
 
-          admin_client_keyring_file="/etc/ceph/ceph.client.admin.keyring"
+          rbd_user_keyring_file="/etc/ceph/ceph.client.#{rbd_user}.keyring" 
           mon_keyring_file = "#{Chef::Config[:file_cache_path]}/#{node['hostname']}.mon.keyring"
 
-          # create the admin client keyring
-          unless File.exist?(admin_client_keyring_file)
+          unless File.exist?(rbd_user_keyring_file)
 
             monitor_secret = if node['ceph']['encrypted_data_bags']
                                secret = Chef::EncryptedDataBagItem.load_secret(node["ceph"]["mon"]["secret_file"])
@@ -149,35 +148,29 @@ case node["cinder"]["storage"]["provider"]
             # create the mon keyring temporarily
             Mixlib::ShellOut.new("ceph-authtool '#{mon_keyring_file}' --create-keyring --name='mon.' --add-key='#{monitor_secret}' --cap mon 'allow *'").run_command
 
-            # write out the client admin keyring
-            admin_client_keyring = Mixlib::ShellOut.new("ceph auth get-or-create client.admin --name='mon.' --keyring='#{mon_keyring_file}'").run_command.stdout
-            f = File.open(admin_client_keyring_file, 'w')
-            f.write(admin_client_keyring)
+            # Ensure the rbd user exists and has appropriate pool permissions).
+            # TODO(mancdaz): get glance pool name by search, and only grant access if glance is using rbd
+            Mixlib::ShellOut.new("ceph auth get-or-create client.#{rbd_user} --name='mon.' --keyring='#{mon_keyring_file}' ").run_command
+            Mixlib::ShellOut.new("ceph auth caps client.#{rbd_user} --name='mon.' --keyring='#{mon_keyring_file}' mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=#{rbd_pool}, allow rx pool=images'").run_command
+
+            # get the key for this user and set it to the node hash so it's
+            # searchable as nova::libvirt needs it
+            rbd_user_key = Mixlib::ShellOut.new("ceph auth get-key client.#{rbd_user} --name='mon.' --keyring='#{mon_keyring_file}'").run_command.stdout
+            node.set['cinder']['storage']['rbd']['rbd_user_key'] = rbd_user_key
+
+            # get the full client, with caps, and write it out to file
+            # TODO(mancdaz): discover ceph config dir rather than hardcode
+            rbd_user_keyring = Mixlib::ShellOut.new("ceph auth get client.#{rbd_user} --name='mon.' --keyring='#{mon_keyring_file}'").run_command.stdout
+            f = File.open("/etc/ceph/ceph.client.#{rbd_user}.keyring", 'w')
+            f.write(rbd_user_keyring)
             f.close
+
+            # create the pool with provided pg_num
+            Mixlib::ShellOut.new("ceph osd pool create #{rbd_pool} #{rbd_pool_pg_num} #{rbd_pool_pg_num} --name='mon.' --keyring='#{mon_keyring_file}'").run_command
 
             # remove the temporary mon keyring
             File.delete(mon_keyring_file)
           end
-
-          # Ensure the rbd user exists and has appropriate pool permissions).
-          # TODO(mancdaz): get glance pool name by search, and only grant access if glance is using rbd
-          Mixlib::ShellOut.new("ceph auth get-or-create client.#{rbd_user}").run_command
-          Mixlib::ShellOut.new("ceph auth caps client.#{rbd_user} mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=#{rbd_pool}, allow rx pool=images'").run_command
-
-          # get the key for this user and set it to the node hash so it's
-          # searchable as nova::libvirt needs it
-          rbd_user_key = Mixlib::ShellOut.new("ceph auth get-key client.#{rbd_user} ").run_command.stdout
-          node.set['cinder']['storage']['rbd']['rbd_user_key'] = rbd_user_key
-
-          # get the full client, with caps, and write it out to file
-          # TODO(mancdaz): discover ceph config dir rather than hardcode
-          rbd_user_keyring = Mixlib::ShellOut.new("ceph auth get client.#{rbd_user}").run_command.stdout
-          f = File.open("/etc/ceph/ceph.client.#{rbd_user}.keyring", 'w')
-          f.write(rbd_user_keyring)
-          f.close
-
-          # create the pool with provided pg_num
-          Mixlib::ShellOut.new("ceph osd pool create #{rbd_pool} #{rbd_pool_pg_num} #{rbd_pool_pg_num}").run_command
         end
       end
     end
