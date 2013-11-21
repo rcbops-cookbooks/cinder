@@ -118,7 +118,7 @@ case node["cinder"]["storage"]["provider"]
 
   when "rbd"
 
-    if node['ceph']['install_method'] == "chef"
+    if rcb_safe_deref(node, "ceph.config.fsid")
 
       include_recipe "ceph::repo"
       include_recipe "ceph"
