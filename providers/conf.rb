@@ -8,7 +8,7 @@ action :create do
   # Search for required endpoints
   rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
   rabbit_settings = get_settings_by_role("rabbitmq-server", "rabbitmq")
-  mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
+  mysql_info = get_mysql_endpoint
   glance_api = get_access_endpoint("glance-api", "glance", "api")
   cinder_api = get_bind_endpoint("cinder", "api")
 
