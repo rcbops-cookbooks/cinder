@@ -81,7 +81,7 @@ keystone_endpoint "Register Cinder Endpoint" do
   api_ver ks_admin_endpoint["path"]
   auth_token keystone["admin_token"]
   service_type "volume"
-  endpoint_region "RegionOne"
+  endpoint_region node["osops"]["region"]
   endpoint_adminurl admin_volume_endpoint["uri"]
   endpoint_internalurl internal_volume_endpoint["uri"]
   endpoint_publicurl volume_endpoint["uri"]
