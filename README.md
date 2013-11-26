@@ -68,7 +68,7 @@ cinder-volume
 Attributes
 ==========
 
-* `cinder["storage"]["provider"]` - storage provider (lvm/netappiscsi, defaults to lvm)
+* `cinder["storage"]["provider"]` - storage provider (lvm/netappiscsi/emc/ebd, defaults to lvm)
 * `cinder["storage"]["iscsi"]["ip_address"]` - The ip address of the iscsi provider.  By default, this will be an ip address on the host. 
 * `cinder["storage"]["solidfire"]["mvip"]` - Solidfire Storage Service VIP
 * `cinder["storage"]["solidfire"]["username"]` - Solidfire Storage Service Admin Username
@@ -92,6 +92,10 @@ Attributes
 * `cinder["storage"]["netapp"]["nfsdirect"]["transport_type"]` - NetApp transport type (http/s)
 * `cinder["storage"]["netapp"]["nfsdirect"]["nfs_shares_config"]` - Configuration file location with a list of volumes exported by NetApp
 * `cinder["storage"]["netapp"]["nfsdirect"]["export"]` - NetApp exported volume to use
+* `cinder["storage"]["rbd"]["rbd_pool"]` - name of the rados pool to use ([volumes])"
+* `cinder["storage"]["rbd"]["rbd_user"]` - name of the ceph user ([volumes])
+* `cinder["storage"]["rbd"]["rbd_pool_pg_num"]` - number of pg's to create the rbd pool with ([1000])
+* `cinder["storage"]["rbd"]["rbd_secret_uuid"]` - an arbitrary uuid to be used with libvirt secret when booting from volumes
 * `cinder["db"]["name"]` - name of database to create for cinder
 * `cinder["db"]["username"]` - cinder username for database
 * `cinder["service_tenant_name"]` - name of tenant to use for the cinder service account in keystone
@@ -197,6 +201,18 @@ node["cinder"]["storage"]["netapp"]["nfsdirect"]["nfs_shares_config"] = "/etc/ci
 node["cinder"]["storage"]["netapp"]["nfsdirect"]["export"] = "NetApp Exported Volume to use"
 ~~~~~~~~~~~~
 
+ceph - RBD
+----------
+
+To use the ceph RBD driver to create volumes in a ceph cluster, the following
+attributes must be set to the appropriate values
+
+~~~~~~~~~~~~
+node["cinder"]["storage"]["rbd"]["rbd_pool"] = "name of the rados pool to use ([volumes])"
+node["cinder"]["storage"]["rbd"]["rbd_user"] = "name of the ceph user ([volumes])"
+node["cinder"]["storage"]["rbd"]["rbd_pool_pg_num"] = "number of pg's to create the rbd pool with ([1000])"
+node["cinder"]["storage"]["rbd"]["rbd_secret_uuid"] = "an arbitrary uuid"
+~~~~~~~~~~~~
 
 License and Author
 ==================
