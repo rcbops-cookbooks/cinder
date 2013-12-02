@@ -121,7 +121,7 @@ when "rhel"
     "cinder_api_packages" => ["openstack-cinder"],
     "cinder_api_service" => "openstack-cinder-api",
     "cinder_api_procmatch" => procmatch_base + 'cinder-api\b',
-    "cinder_volume_packages" => ["openstack-cinder", "iscsi-initiator-utils", "qemu-img"],
+    "cinder_volume_packages" => ["openstack-cinder", "iscsi-initiator-utils", "qemu-img", "sysfsutils"],
     "cinder_volume_service" => "openstack-cinder-volume",
     "cinder_volume_procmatch" => procmatch_base + 'cinder-volume\b',
     "cinder_scheduler_packages" => ["openstack-cinder"],
@@ -133,7 +133,7 @@ when "rhel"
     "package_options" => ""
   }
   default["cinder"]["storage"]["emc"]["packages"] = ["pywbem"]
-  default["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"] = ["nfs-utils", "sysfsutils"]
+  default["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"] = ["nfs-utils"]
   default["cinder"]["ssl"]["dir"] = "/etc/pki/tls"
 when "debian"
   default["cinder"]["platform"] = {
@@ -141,7 +141,7 @@ when "debian"
     "cinder_api_packages" => ["cinder-api"],
     "cinder_api_service" => "cinder-api",
     "cinder_api_procmatch" => procmatch_base + 'cinder-api\b',
-    "cinder_volume_packages" => ["cinder-volume", "open-iscsi", "qemu-utils"],
+    "cinder_volume_packages" => ["cinder-volume", "open-iscsi", "qemu-utils", "sysfsutils"],
     "cinder_volume_service" => "cinder-volume",
     "cinder_volume_procmatch" => procmatch_base + 'cinder-volume\b',
     "cinder_scheduler_packages" => ["cinder-scheduler"],
@@ -153,6 +153,6 @@ when "debian"
     "package_options" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
   }
   default["cinder"]["storage"]["emc"]["packages"] = ["python-pywbem"]
-  default["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"] = ["nfs-common", "sysfsutils"]
+  default["cinder"]["storage"]["netapp"]["nfsdirect"]["packages"] = ["nfs-common"]
   default["cinder"]["ssl"]["dir"] = "/etc/ssl"
 end
