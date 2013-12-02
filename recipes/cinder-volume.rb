@@ -50,6 +50,13 @@ directory "/etc/tgt/conf.d/" do
   recursive true
 end
 
+# Create Cinder lock dir
+directory "/var/lock/cinder/" do
+  mode "755"
+  owner "cinder"
+  group "root"
+end
+
 # Drop targets conf
 cookbook_file "/etc/tgt/targets.conf" do
   source "openstack_defaults/targets.conf"
