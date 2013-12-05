@@ -3,6 +3,10 @@
 default["enable_monit"] = false  # OS provides packages                     # cluster_attribute
 ########################################################################
 
+# Generic regex for process pattern matching (to be used as a base pattern).
+# Works for both Grizzly and Havana packages on Ubuntu and CentOS.
+procmatch_base = '^((/usr/bin/)?python\d? )?(/usr/bin/)?'
+
 # Define the ha policy for queues.  If you change this to true
 # after you have already deployed you will need to wipe the RabbitMQ
 # database by stopping rabbitmq, removing /var/lib/rabbitmq/mnesia
@@ -80,6 +84,13 @@ default["cinder"]["storage"]["netapp"]["nfsdirect"]["transport_type"] = "https"
 default["cinder"]["storage"]["netapp"]["nfsdirect"]["nfs_shares_config"] = "/etc/cinder/shares.txt"
 default["cinder"]["storage"]["netapp"]["nfsdirect"]["export"] = ""
 
+# Ceph RBD settings - set these if you're using Ceph RBD Volumes
+# http://docs.openstack.org/grizzly/openstack-block-storage/admin/content/ceph-rados.html
+# http://ceph.com/docs/next/rbd/rbd-openstack/
+default["cinder"]["storage"]["rbd"]["rbd_pool"] = "volumes"
+default["cinder"]["storage"]["rbd"]["rbd_user"] = "volumes"
+default["cinder"]["storage"]["rbd"]["rbd_secret_uuid"] = ""
+
 # can use a separate 'cinder' network if so desired. Define this network in
 # your environment in the same way you define management/nova etc networks
 default["cinder"]["services"]["volume"]["network"] = "management"
@@ -97,10 +108,13 @@ when "rhel"
     "cinder_common_packages" => ["openstack-cinder"],
     "cinder_api_packages" => ["openstack-cinder"],
     "cinder_api_service" => "openstack-cinder-api",
+    "cinder_api_procmatch" => procmatch_base + 'cinder-api\b',
     "cinder_volume_packages" => ["openstack-cinder", "iscsi-initiator-utils", "qemu-img"],
     "cinder_volume_service" => "openstack-cinder-volume",
+    "cinder_volume_procmatch" => procmatch_base + 'cinder-volume\b',
     "cinder_scheduler_packages" => ["openstack-cinder"],
     "cinder_scheduler_service" => "openstack-cinder-scheduler",
+    "cinder_scheduler_procmatch" => procmatch_base + 'cinder-scheduler\b',
     "cinder_iscsitarget_packages" => ["scsi-target-utils"],
     "cinder_iscsitarget_service" => "tgtd",
     "supporting_packages" => ["python-cinderclient", "MySQL-python", "python-keystone"],
@@ -114,10 +128,13 @@ when "debian"
     "cinder_common_packages" => ["cinder-common"],
     "cinder_api_packages" => ["cinder-api"],
     "cinder_api_service" => "cinder-api",
+    "cinder_api_procmatch" => procmatch_base + 'cinder-api\b',
     "cinder_volume_packages" => ["cinder-volume", "open-iscsi", "qemu-utils"],
     "cinder_volume_service" => "cinder-volume",
+    "cinder_volume_procmatch" => procmatch_base + 'cinder-volume\b',
     "cinder_scheduler_packages" => ["cinder-scheduler"],
     "cinder_scheduler_service" => "cinder-scheduler",
+    "cinder_scheduler_procmatch" => procmatch_base + 'cinder-scheduler\b',
     "cinder_iscsitarget_packages" => ["tgt"],
     "cinder_iscsitarget_service" => "tgt",
     "supporting_packages" => ["python-cinderclient", "python-mysqldb"],
