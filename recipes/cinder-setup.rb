@@ -85,7 +85,7 @@ keystone_endpoint "Register Cinder Endpoint" do
   endpoint_adminurl admin_volume_endpoint["uri"]
   endpoint_internalurl internal_volume_endpoint["uri"]
   endpoint_publicurl volume_endpoint["uri"]
-  action :create
+  action :recreate
 end
 
 # Register Service User
