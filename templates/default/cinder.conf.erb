@@ -27,7 +27,7 @@ notification_topics = <%= @notification_topics %>
 
 ##### API OPTIONS #####
 auth_strategy = keystone
-api_paste_confg = /etc/cinder/api-paste.ini
+api_paste_config = /etc/cinder/api-paste.ini
 notification_driver=cinder.openstack.common.notifier.rpc_notifier
 osapi_volume_listen = <%= @cinder_api_listen_ip %>
 osapi_volume_listen_port = <%= @cinder_api_listen_port %>
