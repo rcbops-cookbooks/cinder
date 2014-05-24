@@ -52,7 +52,7 @@ devices {
     # If it doesn't do what you expect, check the output of 'vgscan -vvvv'.
 
     # Don't scan the Cinder Volume Group
-    filter = [ "r/<%= @volume_group %>/" ]
+    filter = [ "a/.*/", "r/<%= @volume_group %>/" ]
 
     # By default we accept every block device:
     # filter = [ "a/.*/" ]
